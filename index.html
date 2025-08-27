@@ -54,7 +54,29 @@
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
 
-    <main class="container mx-auto p-4 md:p-8 max-w-4xl">
+    <!-- TELA DE LOGIN -->
+    <div id="login-screen" class="fixed inset-0 bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-4 z-50">
+        <div class="w-full max-w-sm bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8">
+            <h2 class="text-2xl font-bold text-center text-gray-700 dark:text-gray-100 mb-2">Lista Login</h2>
+            <p class="text-center text-gray-500 dark:text-gray-400 mb-6">Por favor, insira a senha para continuar.</p>
+            <form id="login-form">
+                <div class="mb-4 relative">
+                    <label for="password" class="sr-only">Senha</label>
+                    <input type="password" id="password" placeholder="Senha" class="w-full py-2 px-3 pr-10 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" aria-label="Mostrar/Ocultar senha">
+                        <svg id="eye-open-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg id="eye-closed-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+                    </button>
+                </div>
+                <button type="submit" class="w-full bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Entrar
+                </button>
+                <p id="login-error" class="text-red-500 text-sm text-center mt-4 h-5"></p>
+            </form>
+        </div>
+    </div>
+
+    <main class="container mx-auto p-4 md:p-8 max-w-4xl hidden">
         <!-- Cabeçalho Principal da Aplicação -->
         <header class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 mb-8">
             <div class="flex justify-between items-start">
@@ -70,11 +92,17 @@
                         <span>Bimestre: <span id="classBimester" contenteditable="true" class="font-semibold p-1 rounded-md">1º</span></span>
                     </div>
                 </div>
-                <!-- Botão de alternar tema (claro/escuro) -->
-                <button id="theme-toggle" class="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" aria-label="Alternar tema">
-                    <svg id="theme-toggle-dark-icon" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-                    <svg id="theme-toggle-light-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm-.707 12.122l.707-.707a1 1 0 10-1.414-1.414l-.707.707a1 1 0 001.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
-                </button>
+                <div class="flex items-center gap-2">
+                    <!-- Botão de Sair (Logout) -->
+                    <button id="logout-btn" class="p-2 rounded-full text-gray-500 hover:bg-red-200 dark:hover:bg-red-700 transition-colors" aria-label="Sair" title="Sair">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    </button>
+                    <!-- Botão de alternar tema (claro/escuro) -->
+                    <button id="theme-toggle" class="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" aria-label="Alternar tema">
+                        <svg id="theme-toggle-dark-icon" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                        <svg id="theme-toggle-light-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm-.707 12.122l.707-.707a1 1 0 10-1.414-1.414l-.707.707a1 1 0 001.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
             </div>
             <div class="mt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div class="flex items-center gap-2">
@@ -261,6 +289,16 @@
             const generateUUID = () => ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
 
             // Elementos da UI
+            const loginScreen = document.getElementById('login-screen');
+            const loginForm = document.getElementById('login-form');
+            const passwordInput = document.getElementById('password');
+            const loginError = document.getElementById('login-error');
+            const mainContent = document.querySelector('main');
+            const logoutBtn = document.getElementById('logout-btn');
+            const togglePasswordBtn = document.getElementById('togglePassword');
+            const eyeOpenIcon = document.getElementById('eye-open-icon');
+            const eyeClosedIcon = document.getElementById('eye-closed-icon');
+
             const studentNameInput = document.getElementById('studentName');
             const addStudentBtn = document.getElementById('addStudentBtn');
             const studentListTableBody = document.getElementById('studentListTable');
@@ -271,7 +309,7 @@
             const emptyStateTable = document.getElementById('empty-state-table');
             const emptyStateCards = document.getElementById('empty-state-cards');
             const classNameSpan = document.getElementById('className');
-            const classTeacherSpan = document.getElementById('classTeacher'); // Novo elemento
+            const classTeacherSpan = document.getElementById('classTeacher');
             const classRoomSpan = document.getElementById('classRoom');
             const classShiftSpan = document.getElementById('classShift');
             const classBimesterSpan = document.getElementById('classBimester');
@@ -323,7 +361,7 @@
                 attendance = JSON.parse(localStorage.getItem('attendance')) || {};
                 classDetails = JSON.parse(localStorage.getItem('classDetails')) || {
                     name: '2° Ano',
-                    teacher: 'Nome do Professor', // Novo campo
+                    teacher: 'Nome do Professor',
                     room: '6',
                     shift: 'Noite',
                     bimester: '1º'
@@ -351,7 +389,7 @@
 
             const saveClassDetails = () => {
                 classDetails.name = classNameSpan.textContent.trim();
-                classDetails.teacher = classTeacherSpan.textContent.trim(); // Salva o professor
+                classDetails.teacher = classTeacherSpan.textContent.trim();
                 classDetails.room = classRoomSpan.textContent.trim();
                 classDetails.shift = classShiftSpan.textContent.trim();
                 classDetails.bimester = classBimesterSpan.textContent.trim();
@@ -880,55 +918,99 @@
                 applyTheme(localStorage.getItem('theme') === 'dark' ? 'light' : 'dark');
             };
             
-            // --- Event Listeners ---
-            addStudentBtn.addEventListener('click', addStudent);
-            studentNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') addStudent(); });
-            attendanceDateInput.addEventListener('change', () => {
-                updateListDateDisplay(attendanceDateInput.value);
-                renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
-            });
-            const handleSearch = () => renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
-            searchStudentInput.addEventListener('input', handleSearch);
-            searchStudentMobileInput.addEventListener('input', handleSearch);
-            [classNameSpan, classTeacherSpan, classRoomSpan, classShiftSpan, classBimesterSpan].forEach(el => {
-                el.addEventListener('blur', saveClassDetails);
-                el.addEventListener('keydown', (e) => { if(e.key === 'Enter') { e.preventDefault(); el.blur(); }});
-            });
-            exportPdfBtn.addEventListener('click', exportToPDF);
-            shareBtn.addEventListener('click', shareAttendance);
-            markAllPresentBtn.addEventListener('click', () => markAll('presente'));
-            clearAllBtn.addEventListener('click', () => markAll('clear'));
-            deleteAllStudentsBtn.addEventListener('click', deleteAllStudents);
-            pasteListBtn.addEventListener('click', () => showModal('pasteModal'));
-            confirmPasteButton.addEventListener('click', addStudentsFromPaste);
-            themeToggleBtn.addEventListener('click', toggleTheme);
-            importCsvBtn.addEventListener('click', () => csvFileInput.click());
-            csvFileInput.addEventListener('change', importFromCSV);
-            exportCsvBtn.addEventListener('click', exportToCSV);
+            // --- Lógica de Login ---
+            const CORRECT_PASSWORD = "professor123"; // <-- MUDE SUA SENHA AQUI
 
-            const handleStudentAction = (e) => {
-                const target = e.target;
-                const rowOrCard = target.closest('[data-student-id]'); 
-                if (!rowOrCard) return;
-                const studentId = rowOrCard.dataset.studentId;
-                if (target.closest('.status-btn')) setAttendanceStatus(studentId, target.closest('.status-btn').dataset.status);
-                if (target.closest('.delete-btn')) deleteStudent(studentId);
-                if (target.closest('.edit-btn')) editStudentName(studentId, rowOrCard.querySelector('.student-name').parentElement);
-                if (target.closest('.history-btn')) showStudentHistory(studentId);
+            const checkLogin = () => {
+                if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                    loginScreen.classList.add('hidden');
+                    mainContent.classList.remove('hidden');
+                    startAppLogic();
+                } else {
+                    loginScreen.classList.remove('hidden');
+                    mainContent.classList.add('hidden');
+                }
             };
-            studentListTableBody.addEventListener('click', handleStudentAction);
-            studentListCardsContainer.addEventListener('click', handleStudentAction);
 
-            [confirmationModal, pasteModal, historyModal].forEach(modal => {
-                modal.addEventListener('click', (e) => { if (e.target === modal) hideModal(modal.id); });
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (passwordInput.value === CORRECT_PASSWORD) {
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    checkLogin();
+                } else {
+                    loginError.textContent = 'Senha incorreta. Tente novamente.';
+                    passwordInput.value = '';
+                    // Animação de "tremor" para feedback
+                    loginScreen.querySelector('div').classList.add('animate-shake');
+                    setTimeout(() => {
+                        loginScreen.querySelector('div').classList.remove('animate-shake');
+                    }, 500);
+                }
             });
-            closeHistoryModalBtn.addEventListener('click', () => hideModal('historyModal'));
-            cancelButton.addEventListener('click', () => hideModal('confirmationModal'));
-            confirmButton.addEventListener('click', () => { if (confirmCallback) confirmCallback(); hideModal('confirmationModal'); });
-            cancelPasteButton.addEventListener('click', () => hideModal('pasteModal'));
+
+            logoutBtn.addEventListener('click', () => {
+                sessionStorage.removeItem('isLoggedIn');
+                location.reload();
+            });
+
+            togglePasswordBtn.addEventListener('click', () => {
+                const isPassword = passwordInput.type === 'password';
+                passwordInput.type = isPassword ? 'text' : 'password';
+                eyeOpenIcon.classList.toggle('hidden', isPassword);
+                eyeClosedIcon.classList.toggle('hidden', !isPassword);
+            });
+
+            // --- Event Listeners ---
+            const addAppEventListeners = () => {
+                addStudentBtn.addEventListener('click', addStudent);
+                studentNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') addStudent(); });
+                attendanceDateInput.addEventListener('change', () => {
+                    updateListDateDisplay(attendanceDateInput.value);
+                    renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
+                });
+                const handleSearch = () => renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
+                searchStudentInput.addEventListener('input', handleSearch);
+                searchStudentMobileInput.addEventListener('input', handleSearch);
+                [classNameSpan, classTeacherSpan, classRoomSpan, classShiftSpan, classBimesterSpan].forEach(el => {
+                    el.addEventListener('blur', saveClassDetails);
+                    el.addEventListener('keydown', (e) => { if(e.key === 'Enter') { e.preventDefault(); el.blur(); }});
+                });
+                exportPdfBtn.addEventListener('click', exportToPDF);
+                shareBtn.addEventListener('click', shareAttendance);
+                markAllPresentBtn.addEventListener('click', () => markAll('presente'));
+                clearAllBtn.addEventListener('click', () => markAll('clear'));
+                deleteAllStudentsBtn.addEventListener('click', deleteAllStudents);
+                pasteListBtn.addEventListener('click', () => showModal('pasteModal'));
+                confirmPasteButton.addEventListener('click', addStudentsFromPaste);
+                themeToggleBtn.addEventListener('click', toggleTheme);
+                importCsvBtn.addEventListener('click', () => csvFileInput.click());
+                csvFileInput.addEventListener('change', importFromCSV);
+                exportCsvBtn.addEventListener('click', exportToCSV);
+
+                const handleStudentAction = (e) => {
+                    const target = e.target;
+                    const rowOrCard = target.closest('[data-student-id]'); 
+                    if (!rowOrCard) return;
+                    const studentId = rowOrCard.dataset.studentId;
+                    if (target.closest('.status-btn')) setAttendanceStatus(studentId, target.closest('.status-btn').dataset.status);
+                    if (target.closest('.delete-btn')) deleteStudent(studentId);
+                    if (target.closest('.edit-btn')) editStudentName(studentId, rowOrCard.querySelector('.student-name').parentElement);
+                    if (target.closest('.history-btn')) showStudentHistory(studentId);
+                };
+                studentListTableBody.addEventListener('click', handleStudentAction);
+                studentListCardsContainer.addEventListener('click', handleStudentAction);
+
+                [confirmationModal, pasteModal, historyModal].forEach(modal => {
+                    modal.addEventListener('click', (e) => { if (e.target === modal) hideModal(modal.id); });
+                });
+                closeHistoryModalBtn.addEventListener('click', () => hideModal('historyModal'));
+                cancelButton.addEventListener('click', () => hideModal('confirmationModal'));
+                confirmButton.addEventListener('click', () => { if (confirmCallback) confirmCallback(); hideModal('confirmationModal'); });
+                cancelPasteButton.addEventListener('click', () => hideModal('pasteModal'));
+            };
 
             // --- Inicialização ---
-            const initApp = () => {
+            const startAppLogic = () => {
                 loadData();
                 classNameSpan.textContent = classDetails.name;
                 classTeacherSpan.textContent = classDetails.teacher;
@@ -942,9 +1024,10 @@
                 renderStudents();
                 const storedTheme = localStorage.getItem('theme');
                 applyTheme(storedTheme ? storedTheme : (prefersDark.matches ? 'dark' : 'light'));
+                addAppEventListeners();
             };
 
-            initApp();
+            checkLogin();
         });
     </script>
 </body>
