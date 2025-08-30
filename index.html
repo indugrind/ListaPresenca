@@ -7,7 +7,7 @@
     
     <!-- Ícones de favicon e apple-touch-icon para a aplicação web -->
     <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%234299E1'/%3E%3Cpath fill='none' stroke='%23FFF' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' d='M25 50 l20 20 l35 -35'/%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%234299E1'/%3E%3Cpath fill='none' stroke='%23FFF' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' d='M25 50 l20 20 l35 -35'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%234299E1'/%3E%3Cpath fill='none' stroke='FFF' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' d='M25 50 l20 20 l35 -35'/%3E%3C/svg%3E">
 
     <!-- Inclui a biblioteca Tailwind CSS para estilização rápida e moderna -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -50,30 +50,21 @@
         .dark [contenteditable]:focus {
             background-color: #4b5563;
         }
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
 
-    <!-- TELA DE LOGIN -->
-    <div id="login-screen" class="fixed inset-0 bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-4 z-50">
-        <div class="w-full max-w-sm bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8">
-            <h2 class="text-2xl font-bold text-center text-gray-700 dark:text-gray-100 mb-2">Lista Login</h2>
-            <p class="text-center text-gray-500 dark:text-gray-400 mb-6">Por favor, insira a senha para continuar.</p>
-            <form id="login-form">
-                <div class="mb-4 relative">
-                    <label for="password" class="sr-only">Senha</label>
-                    <input type="password" id="password" placeholder="Senha" class="w-full py-2 px-3 pr-10 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                    <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" aria-label="Mostrar/Ocultar senha">
-                        <svg id="eye-open-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                        <svg id="eye-closed-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
-                    </button>
-                </div>
-                <button type="submit" class="w-full bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                    Entrar
-                </button>
-                <p id="login-error" class="text-red-500 text-sm text-center mt-4 h-5"></p>
-            </form>
-        </div>
+    <!-- TELA DE LOGIN (Substituído por um indicador de carregamento, pois a autenticação é automática) -->
+    <div id="login-screen" class="fixed inset-0 bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-center p-4 z-50">
+        <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+        <p class="mt-4 text-gray-600 dark:text-gray-400">Carregando...</p>
     </div>
 
     <main class="container mx-auto p-4 md:p-8 max-w-4xl hidden">
@@ -103,6 +94,9 @@
                         <svg id="theme-toggle-light-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm-.707 12.122l.707-.707a1 1 0 10-1.414-1.414l-.707.707a1 1 0 001.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
                     </button>
                 </div>
+            </div>
+            <div id="userIdDisplay" class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+              ID do Usuário: <span id="userIdValue" class="font-mono text-xs"></span>
             </div>
             <div class="mt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div class="flex items-center gap-2">
@@ -138,11 +132,11 @@
                         </button>
                         <button id="pasteListBtn" class="bg-teal-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-teal-600 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-paste"><path d="M12 2H8a2 2 0 0 0-2 2v2h8V4a2 2 0 0 0-2-2Z"/><path d="M16 4h2a2 2 0 0 1 2 2v4h-4V4Z"/><path d="M18 10h4v8a2 2 0 0 1-2 2h-2"/><path d="M6 10H2v8a2 2 0 0 0 2 2h2"/><rect width="8" height="8" x="8" y="12" rx="1"/></svg>
-                            Colar Lista
+                           Colar Lista
                         </button>
                         <button id="deleteAllStudentsBtn" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                            Apagar Todos
+                           Apagar Todos
                         </button>
                     </div>
                 </div>
@@ -283,22 +277,28 @@
         Texto copiado para a área de transferência!
     </div>
     
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- Geração de ID Único ---
-            const generateUUID = () => ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
+    <!-- Scripts do Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, setLogLevel, doc, setDoc, getDoc, collection, query, onSnapshot, addDoc, deleteDoc, runTransaction } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // As variáveis globais abaixo são fornecidas pelo ambiente do Canvas
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        let db;
+        let auth;
+        let userId;
 
+        setLogLevel('debug'); // Ativa o modo de depuração para ver os logs do Firestore
+
+        document.addEventListener('DOMContentLoaded', () => {
             // Elementos da UI
             const loginScreen = document.getElementById('login-screen');
-            const loginForm = document.getElementById('login-form');
-            const passwordInput = document.getElementById('password');
-            const loginError = document.getElementById('login-error');
             const mainContent = document.querySelector('main');
             const logoutBtn = document.getElementById('logout-btn');
-            const togglePasswordBtn = document.getElementById('togglePassword');
-            const eyeOpenIcon = document.getElementById('eye-open-icon');
-            const eyeClosedIcon = document.getElementById('eye-closed-icon');
-
             const studentNameInput = document.getElementById('studentName');
             const addStudentBtn = document.getElementById('addStudentBtn');
             const studentListTableBody = document.getElementById('studentListTable');
@@ -331,8 +331,8 @@
             const importCsvBtn = document.getElementById('importCsvBtn');
             const csvFileInput = document.getElementById('csvFileInput');
             const exportCsvBtn = document.getElementById('exportCsvBtn');
-            const closeHistoryModalBtn = document.getElementById('closeHistoryModalBtn');
-
+            const userIdValue = document.getElementById('userIdValue');
+            
             // Modais
             const confirmationModal = document.getElementById('confirmationModal');
             const modalTitle = document.getElementById('modalTitle');
@@ -349,56 +349,153 @@
             const historyModal = document.getElementById('historyModal');
             const historyStudentName = document.getElementById('historyStudentName');
             const historyListBody = document.getElementById('historyListBody');
+            const closeHistoryModalBtn = document.getElementById('closeHistoryModalBtn');
 
-            // --- Gerenciamento de Dados (localStorage) ---
+            // --- Gerenciamento de Dados (Firebase) ---
             let students = [];
             let attendance = {};
             let classDetails = {};
             let editingStudentId = null;
 
-            const loadData = () => {
-                students = JSON.parse(localStorage.getItem('students')) || [];
-                attendance = JSON.parse(localStorage.getItem('attendance')) || {};
-                classDetails = JSON.parse(localStorage.getItem('classDetails')) || {
-                    name: '2° Ano',
-                    teacher: 'Nome do Professor',
-                    room: '6',
-                    shift: 'Noite',
-                    bimester: '1º'
-                };
-            };
+            // Inicia o Firebase e ouve o estado de autenticação
+            const initFirebase = async () => {
+                if (Object.keys(firebaseConfig).length > 0) {
+                    const app = initializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+                    try {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (error) {
+                        console.error("Erro na autenticação:", error);
+                        // Permanece na tela de login/carregamento em caso de falha
+                    }
 
+                    // Ouvinte de autenticação do Firebase
+                    onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            userId = user.uid;
+                            userIdValue.textContent = userId;
+                            loginScreen.classList.add('hidden');
+                            mainContent.classList.remove('hidden');
+                            startAppLogic();
+                        } else {
+                            loginScreen.classList.remove('hidden');
+                            mainContent.classList.add('hidden');
+                            // Exibe a tela de login/carregamento
+                        }
+                    });
+                }
+            };
+            
+            // Gerencia o status de salvamento
+            let saveTimeout;
             const showSavingStatus = () => {
+                clearTimeout(saveTimeout);
                 savingIndicator.classList.remove('opacity-0');
                 savingIndicator.classList.add('opacity-100');
-                setTimeout(() => {
+                saveTimeout = setTimeout(() => {
                     savingIndicator.classList.remove('opacity-100');
                     savingIndicator.classList.add('opacity-0');
                 }, 1500);
             };
 
-            const saveStudents = () => {
-                localStorage.setItem('students', JSON.stringify(students));
-                showSavingStatus();
+            // Salva os detalhes da turma no Firestore
+            const saveClassDetails = async () => {
+                if (!userId) return;
+                const details = {
+                    name: classNameSpan.textContent.trim(),
+                    teacher: classTeacherSpan.textContent.trim(),
+                    room: classRoomSpan.textContent.trim(),
+                    shift: classShiftSpan.textContent.trim(),
+                    bimester: classBimesterSpan.textContent.trim()
+                };
+                await setDoc(doc(db, `artifacts/${appId}/users/${userId}/classDetails/info`), details)
+                    .then(showSavingStatus)
+                    .catch(e => console.error("Erro ao salvar detalhes da turma:", e));
             };
 
-            const saveAttendance = () => {
-                localStorage.setItem('attendance', JSON.stringify(attendance));
-                showSavingStatus();
+            // Salva um aluno no Firestore
+            const saveStudent = async (studentData) => {
+                if (!userId) return;
+                const studentsColRef = collection(db, `artifacts/${appId}/users/${userId}/students`);
+                if (studentData.id) {
+                    await setDoc(doc(studentsColRef, studentData.id), studentData)
+                        .then(showSavingStatus)
+                        .catch(e => console.error("Erro ao atualizar aluno:", e));
+                } else {
+                    await addDoc(studentsColRef, studentData)
+                        .then(showSavingStatus)
+                        .catch(e => console.error("Erro ao adicionar aluno:", e));
+                }
             };
 
-            const saveClassDetails = () => {
-                classDetails.name = classNameSpan.textContent.trim();
-                classDetails.teacher = classTeacherSpan.textContent.trim();
-                classDetails.room = classRoomSpan.textContent.trim();
-                classDetails.shift = classShiftSpan.textContent.trim();
-                classDetails.bimester = classBimesterSpan.textContent.trim();
-                localStorage.setItem('classDetails', JSON.stringify(classDetails));
-                showSavingStatus();
+            // Deleta um aluno do Firestore
+            const deleteStudentFromDb = async (studentId) => {
+                if (!userId) return;
+                try {
+                    await deleteDoc(doc(db, `artifacts/${appId}/users/${userId}/students/${studentId}`));
+                    showToast('Aluno excluído com sucesso.');
+                } catch (e) {
+                    console.error("Erro ao excluir aluno:", e);
+                    showToast('Erro ao excluir aluno.');
+                }
+            };
+
+            // Salva o status de presença de um aluno
+            const saveAttendanceStatus = async (studentId, date, status) => {
+                if (!userId) return;
+                const attendanceDocRef = doc(db, `artifacts/${appId}/users/${userId}/attendance/${date}`);
+                await runTransaction(db, async (transaction) => {
+                    const docSnapshot = await transaction.get(attendanceDocRef);
+                    if (!docSnapshot.exists()) {
+                        transaction.set(attendanceDocRef, { [studentId]: status });
+                    } else {
+                        const data = docSnapshot.data();
+                        data[studentId] = status;
+                        transaction.update(attendanceDocRef, data);
+                    }
+                }).then(showSavingStatus).catch(e => console.error("Erro ao atualizar presença:", e));
+            };
+
+            // Limpa o status de presença para uma data
+            const clearAllAttendance = async (date) => {
+                if (!userId) return;
+                const attendanceDocRef = doc(db, `artifacts/${appId}/users/${userId}/attendance/${date}`);
+                await setDoc(attendanceDocRef, {}).then(showSavingStatus).catch(e => console.error("Erro ao limpar presença:", e));
+            };
+
+            // Marca todos como presentes
+            const markAllPresent = async (date) => {
+                if (!userId || students.length === 0) return;
+                const attendanceData = {};
+                students.forEach(student => attendanceData[student.id] = 'presente');
+                const attendanceDocRef = doc(db, `artifacts/${appId}/users/${userId}/attendance/${date}`);
+                await setDoc(attendanceDocRef, attendanceData).then(showSavingStatus).catch(e => console.error("Erro ao marcar todos como presentes:", e));
             };
             
-            const sortStudents = () => {
-                students.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' }));
+            // Deleta todos os alunos e presença
+            const deleteAllStudentsFromDb = async () => {
+                if (!userId) return;
+                try {
+                    await runTransaction(db, async (transaction) => {
+                        const studentsQuery = query(collection(db, `artifacts/${appId}/users/${userId}/students`));
+                        const attendanceQuery = query(collection(db, `artifacts/${appId}/users/${userId}/attendance`));
+
+                        const studentsSnapshot = await getDocs(studentsQuery);
+                        studentsSnapshot.forEach(doc => transaction.delete(doc.ref));
+
+                        const attendanceSnapshot = await getDocs(attendanceQuery);
+                        attendanceSnapshot.forEach(doc => transaction.delete(doc.ref));
+                    });
+                    showToast('Lista de alunos e histórico apagados.');
+                } catch (e) {
+                    console.error("Erro ao apagar todos os alunos:", e);
+                    showToast('Erro ao apagar todos os alunos.');
+                }
             };
 
             // --- Funções do Relógio e Data ---
@@ -495,7 +592,7 @@
                     // Renderização da tabela para desktop
                     const row = document.createElement('tr');
                     row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors';
-                    row.setAttribute('data-student-id', student.id); 
+                    row.setAttribute('data-student-id', student.id);
                     row.innerHTML = `
                         <td class="p-4 text-gray-500 dark:text-gray-400 font-mono text-sm">${index + 1}</td>
                         <td class="p-4 font-medium text-gray-800 dark:text-gray-200">
@@ -566,11 +663,11 @@
                         Presentes: ${presentCount}
                     </span>
                     <span class="flex items-center gap-2 font-semibold text-red-600 bg-red-100 dark:bg-red-900/50 dark:text-red-300 px-3 py-1 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" x2="6" y1="6" y2="18"></line></svg>
                         Ausentes: ${absentCount}
                     </span>
                     <span class="flex items-center gap-2 font-semibold text-gray-600 bg-gray-100 dark:bg-gray-700/50 dark:text-gray-300 px-3 py-1 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>
                         Não Marcados: ${notMarkedCount}
                     </span>
                 `;
@@ -578,30 +675,19 @@
                 attendanceSummaryMobile.innerHTML = summaryHtml;
             };
 
-            const addStudent = () => {
+            const addStudent = async () => {
                 const name = studentNameInput.value.trim();
                 if (name) {
-                    students.push({ id: generateUUID(), name: name });
-                    sortStudents();
-                    saveStudents();
-                    renderStudents(searchStudentInput.value);
+                    await saveStudent({ name });
                     studentNameInput.value = '';
                     studentNameInput.focus();
-                    showToast('Aluno adicionado com sucesso!');
                 }
             };
 
             const deleteStudent = (id) => {
                 const student = students.find(s => s.id === id);
                 showModal('confirmationModal', 'Excluir Aluno', `Tem certeza que deseja excluir "${student.name}"? Esta ação não pode ser desfeita.`, () => {
-                    students = students.filter(s => s.id !== id);
-                    saveStudents();
-                    Object.keys(attendance).forEach(date => {
-                        delete attendance[date][id];
-                    });
-                    saveAttendance();
-                    renderStudents(searchStudentInput.value);
-                    showToast('Aluno excluído com sucesso.');
+                    deleteStudentFromDb(id);
                 }, true);
             };
             
@@ -639,13 +725,10 @@
                 input.focus();
                 input.select();
 
-                const saveChanges = () => {
+                const saveChanges = async () => {
                     const newName = input.value.trim();
                     if (newName && newName !== originalName) {
-                        student.name = newName;
-                        sortStudents();
-                        saveStudents();
-                        showToast('Nome do aluno atualizado!');
+                        await saveStudent({ id, name: newName });
                     }
                     editingStudentId = null;
                     renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
@@ -669,43 +752,43 @@
                 });
             };
 
-            const setAttendanceStatus = (studentId, status) => {
+            const setAttendanceStatus = async (studentId, status) => {
                 const selectedDate = attendanceDateInput.value;
-                if (!attendance[selectedDate]) {
-                    attendance[selectedDate] = {};
-                }
-                
-                if (attendance[selectedDate][studentId] === status) {
-                    delete attendance[selectedDate][studentId];
-                } else {
-                    attendance[selectedDate][studentId] = status;
-                }
-                
-                saveAttendance();
-                renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
+                await saveAttendanceStatus(studentId, selectedDate, status);
             };
 
-            const showStudentHistory = (studentId) => {
+            const showStudentHistory = async (studentId) => {
+                if (!userId) return;
                 const student = students.find(s => s.id === studentId);
                 if (!student) return;
 
                 historyStudentName.textContent = `Histórico de: ${student.name}`;
                 historyListBody.innerHTML = '';
-                const dates = Object.keys(attendance).sort().reverse();
+                
+                const attendanceColRef = collection(db, `artifacts/${appId}/users/${userId}/attendance`);
+                const q = query(attendanceColRef);
+                const querySnapshot = await getDocs(q);
 
                 let hasRecords = false;
-                dates.forEach(date => {
-                    const status = attendance[date][studentId];
-                    if (!status) return;
+                const historyRecords = [];
+                querySnapshot.forEach(doc => {
+                    const date = doc.id;
+                    const data = doc.data();
+                    if (data[studentId]) {
+                        historyRecords.push({ date, status: data[studentId] });
+                    }
+                });
 
+                historyRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                historyRecords.forEach(record => {
                     hasRecords = true;
                     let statusText = '';
                     let statusColor = '';
-
-                    if (status === 'presente') {
+                    if (record.status === 'presente') {
                         statusText = 'Presente ✅';
                         statusColor = 'text-green-500';
-                    } else if (status === 'ausente') {
+                    } else if (record.status === 'ausente') {
                         statusText = 'Ausente ❌';
                         statusColor = 'text-red-500';
                     }
@@ -713,7 +796,7 @@
                     const row = document.createElement('tr');
                     row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors';
                     row.innerHTML = `
-                        <td class="p-3 text-sm">${new Date(date.replace(/-/g, '/')).toLocaleDateString('pt-BR')}</td>
+                        <td class="p-3 text-sm">${new Date(record.date.replace(/-/g, '/')).toLocaleDateString('pt-BR')}</td>
                         <td class="p-3 text-sm font-semibold ${statusColor}">${statusText}</td>
                     `;
                     historyListBody.appendChild(row);
@@ -733,7 +816,7 @@
                     return;
                 }
 
-                let csvContent = `Professor(a):,"${classDetails.teacher}"\n`; // Adiciona o professor
+                let csvContent = `Professor(a):,"${classDetails.teacher}"\n`;
                 csvContent += "ID,Nome,";
                 const sortedDates = Object.keys(attendance).sort();
                 csvContent += sortedDates.join(',') + "\n";
@@ -760,12 +843,13 @@
                 showToast('Arquivo CSV exportado com sucesso!');
             };
 
-            const importFromCSV = (event) => {
+            const importFromCSV = async (event) => {
+                if (!userId) return;
                 const file = event.target.files[0];
                 if (!file) return;
 
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = async function(e) {
                     const text = e.target.result;
                     const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
 
@@ -776,14 +860,16 @@
 
                     const names = lines.map(line => line.split(',')[0].trim().replace(/"/g, '')).filter(Boolean);
                     
-                    showModal('confirmationModal', 'Importar Alunos via CSV', `Isso substituirá sua lista atual por ${names.length} aluno(s) do arquivo. Deseja continuar?`, () => {
-                        students = names.map(name => ({ id: generateUUID(), name }));
-                        attendance = {}; // Limpa o histórico de presença
-                        sortStudents();
-                        saveStudents();
-                        saveAttendance();
-                        renderStudents();
-                        showToast(`${students.length} alunos importados com sucesso!`);
+                    showModal('confirmationModal', 'Importar Alunos via CSV', `Isso substituirá sua lista atual por ${names.length} aluno(s) do arquivo. Deseja continuar?`, async () => {
+                        // Deleta todos os alunos e presença existentes antes de importar
+                        await deleteAllStudentsFromDb();
+
+                        // Adiciona os novos alunos
+                        const studentsColRef = collection(db, `artifacts/${appId}/users/${userId}/students`);
+                        for (const name of names) {
+                            await addDoc(studentsColRef, { name });
+                        }
+                        showToast(`${names.length} alunos importados com sucesso!`);
                     }, true);
                 };
                 reader.readAsText(file);
@@ -854,32 +940,25 @@
             };
             
             const markAll = (status) => {
-                const selectedDate = attendanceDateInput.value;
-                if (!attendance[selectedDate]) attendance[selectedDate] = {};
-                
-                if (status === 'clear') {
-                    attendance[selectedDate] = {};
-                } else {
-                    students.forEach(student => {
-                        attendance[selectedDate][student.id] = status;
-                    });
-                }
-                saveAttendance();
-                renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
+                showModal('confirmationModal', 'Marcar Todos', 'Deseja marcar todos os alunos para esta data?', async () => {
+                    const selectedDate = attendanceDateInput.value;
+                    if (status === 'clear') {
+                        await clearAllAttendance(selectedDate);
+                    } else if (status === 'presente') {
+                        await markAllPresent(selectedDate);
+                    }
+                    showToast('Marcação realizada com sucesso.');
+                });
             };
             
             const deleteAllStudents = () => {
                 showModal('confirmationModal', 'Apagar Todos os Alunos', 'Isso apagará todos os alunos e o histórico de presença. Esta ação é irreversível.', () => {
-                    students = [];
-                    attendance = {};
-                    saveStudents();
-                    saveAttendance();
-                    renderStudents();
-                    showToast('Lista de alunos apagada.');
+                    deleteAllStudentsFromDb();
                 }, true);
             };
             
-            const addStudentsFromPaste = () => {
+            const addStudentsFromPaste = async () => {
+                if (!userId) return;
                 const namesText = pasteTextarea.value.trim();
                 if (!namesText) { hideModal('pasteModal'); return; }
 
@@ -887,10 +966,10 @@
                 const namesToAdd = namesText.split(/\r?\n/).map(name => name.trim()).filter(name => name && !existingNames.has(name.toLowerCase()));
                 
                 if (namesToAdd.length > 0) {
-                    namesToAdd.forEach(name => students.push({ id: generateUUID(), name: name }));
-                    sortStudents();
-                    saveStudents();
-                    renderStudents();
+                    const studentsColRef = collection(db, `artifacts/${appId}/users/${userId}/students`);
+                    for (const name of namesToAdd) {
+                        await addDoc(studentsColRef, { name });
+                    }
                     showToast(`${namesToAdd.length} aluno(s) adicionado(s)!`);
                 } else {
                     showToast('Nenhum nome novo para adicionar.');
@@ -912,55 +991,66 @@
                     themeToggleDarkIcon.classList.add('hidden');
                     themeToggleLightIcon.classList.remove('hidden');
                 }
-                localStorage.setItem('theme', theme);
             };
             const toggleTheme = () => {
-                applyTheme(localStorage.getItem('theme') === 'dark' ? 'light' : 'dark');
-            };
-            
-            // --- Lógica de Login ---
-            const CORRECT_PASSWORD = "professor123"; // <-- MUDE SUA SENHA AQUI
-
-            const checkLogin = () => {
-                if (sessionStorage.getItem('isLoggedIn') === 'true') {
-                    loginScreen.classList.add('hidden');
-                    mainContent.classList.remove('hidden');
-                    startAppLogic();
-                } else {
-                    loginScreen.classList.remove('hidden');
-                    mainContent.classList.add('hidden');
-                }
+                const newTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+                applyTheme(newTheme);
             };
 
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                if (passwordInput.value === CORRECT_PASSWORD) {
-                    sessionStorage.setItem('isLoggedIn', 'true');
-                    checkLogin();
-                } else {
-                    loginError.textContent = 'Senha incorreta. Tente novamente.';
-                    passwordInput.value = '';
-                    // Animação de "tremor" para feedback
-                    loginScreen.querySelector('div').classList.add('animate-shake');
-                    setTimeout(() => {
-                        loginScreen.querySelector('div').classList.remove('animate-shake');
-                    }, 500);
-                }
-            });
+            // --- Inicialização ---
+            const startAppLogic = () => {
+                // Configura os listeners em tempo real do Firestore
+                const studentsColRef = collection(db, `artifacts/${appId}/users/${userId}/students`);
+                onSnapshot(studentsColRef, (querySnapshot) => {
+                    const studentList = [];
+                    querySnapshot.forEach(doc => {
+                        studentList.push({ id: doc.id, ...doc.data() });
+                    });
+                    students = studentList.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' }));
+                    renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
+                }, (error) => {
+                    console.error("Erro ao ouvir a coleção de alunos:", error);
+                    showToast("Erro ao carregar a lista de alunos.");
+                });
 
-            logoutBtn.addEventListener('click', () => {
-                sessionStorage.removeItem('isLoggedIn');
-                location.reload();
-            });
+                const attendanceColRef = collection(db, `artifacts/${appId}/users/${userId}/attendance`);
+                onSnapshot(attendanceColRef, (querySnapshot) => {
+                    const attendanceData = {};
+                    querySnapshot.forEach(doc => {
+                        attendanceData[doc.id] = doc.data();
+                    });
+                    attendance = attendanceData;
+                    renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
+                }, (error) => {
+                    console.error("Erro ao ouvir a coleção de presença:", error);
+                });
 
-            togglePasswordBtn.addEventListener('click', () => {
-                const isPassword = passwordInput.type === 'password';
-                passwordInput.type = isPassword ? 'text' : 'password';
-                eyeOpenIcon.classList.toggle('hidden', isPassword);
-                eyeClosedIcon.classList.toggle('hidden', !isPassword);
-            });
+                const classDetailsDocRef = doc(db, `artifacts/${appId}/users/${userId}/classDetails/info`);
+                onSnapshot(classDetailsDocRef, (docSnapshot) => {
+                    if (docSnapshot.exists()) {
+                        classDetails = docSnapshot.data();
+                        classNameSpan.textContent = classDetails.name;
+                        classTeacherSpan.textContent = classDetails.teacher;
+                        classRoomSpan.textContent = classDetails.room;
+                        classShiftSpan.textContent = classDetails.shift;
+                        classBimesterSpan.textContent = classDetails.bimester;
+                    } else {
+                        // Se não houver dados, cria o documento inicial
+                        classDetails = { name: '2° Ano', teacher: 'Nome do Professor', room: '6', shift: 'Noite', bimester: '1º' };
+                        setDoc(classDetailsDocRef, classDetails);
+                    }
+                }, (error) => {
+                    console.error("Erro ao ouvir os detalhes da turma:", error);
+                });
 
-            // --- Event Listeners ---
+                setCurrentDate();
+                setInterval(updateTime, 1000);
+                updateTime();
+                const storedTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+                applyTheme(storedTheme);
+                addAppEventListeners();
+            };
+
             const addAppEventListeners = () => {
                 addStudentBtn.addEventListener('click', addStudent);
                 studentNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') addStudent(); });
@@ -989,7 +1079,7 @@
 
                 const handleStudentAction = (e) => {
                     const target = e.target;
-                    const rowOrCard = target.closest('[data-student-id]'); 
+                    const rowOrCard = target.closest('[data-student-id]');
                     if (!rowOrCard) return;
                     const studentId = rowOrCard.dataset.studentId;
                     if (target.closest('.status-btn')) setAttendanceStatus(studentId, target.closest('.status-btn').dataset.status);
@@ -1009,25 +1099,7 @@
                 cancelPasteButton.addEventListener('click', () => hideModal('pasteModal'));
             };
 
-            // --- Inicialização ---
-            const startAppLogic = () => {
-                loadData();
-                classNameSpan.textContent = classDetails.name;
-                classTeacherSpan.textContent = classDetails.teacher;
-                classRoomSpan.textContent = classDetails.room;
-                classShiftSpan.textContent = classDetails.shift;
-                classBimesterSpan.textContent = classDetails.bimester;
-                sortStudents();
-                setCurrentDate();
-                setInterval(updateTime, 1000);
-                updateTime();
-                renderStudents();
-                const storedTheme = localStorage.getItem('theme');
-                applyTheme(storedTheme ? storedTheme : (prefersDark.matches ? 'dark' : 'light'));
-                addAppEventListeners();
-            };
-
-            checkLogin();
+            initFirebase();
         });
     </script>
 </body>
