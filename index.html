@@ -1,998 +1,923 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Lista de Presença</title>
-    
-    <!-- Ícones de favicon e apple-touch-icon para a aplicação web -->
-    <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%234299E1'/%3E%3Cpath fill='none' stroke='%23FFF' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' d='M25 50 l20 20 l35 -35'/%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%234299E1'/%3E%3Cpath fill='none' stroke='%23FFF' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' d='M25 50 l20 20 l35 -35'/%3E%3C/svg%3E">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Lista de Presença</title>
+    
+    <!-- Ícones de favicon e apple-touch-icon para a aplicação web -->
+    <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%234299E1'/%3E%3Cpath fill='none' stroke='%23FFF' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' d='M25 50 l20 20 l35 -35'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%234299E1'/%3E%3Cpath fill='none' stroke='%23FFF' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' d='M25 50 l20 20 l35 -35'/%3E%3C/svg%3E">
 
-    <!-- Inclui a biblioteca Tailwind CSS para estilização rápida e moderna -->
-    <script src="https://cdn.tailwindcss.com" data-config='{ "darkMode": "class" }'></script>
-    <!-- Biblioteca para exportar o conteúdo para PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- Inclui a fonte Inter do Google Fonts para a tipografia -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Estilo para a barra de rolagem */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        .dark ::-webkit-scrollbar-track { background: #1f2937; }
-        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
-        .dark ::-webkit-scrollbar-thumb { background: #4b5563; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
-        
-        .modal-backdrop { transition: opacity 0.3s ease, visibility 0.3s ease; }
-        .modal-backdrop.show { opacity: 1; visibility: visible; }
-        .modal-content { transform: scale(0.95); transition: transform 0.3s ease; }
-        .modal-backdrop.show .modal-content { transform: scale(1); }
-        
-        .toast { transition: opacity 0.3s ease, transform 0.3s ease; }
-        .toast.show { opacity: 1; transform: translateY(0); }
+    <!-- Inclui a biblioteca Tailwind CSS para estilização rápida e moderna -->
+    <script src="https://cdn.tailwindcss.com" data-config='{ "darkMode": "class" }'></script>
+    <!-- Biblioteca para exportar o conteúdo para PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Inclui a fonte Inter do Google Fonts para a tipografia -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilo para a barra de rolagem */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        .dark ::-webkit-scrollbar-track { background: #1f2937; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #4b5563; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        
+        .modal-backdrop { transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .modal-backdrop.show { opacity: 1; visibility: visible; }
+        .modal-content { transform: scale(0.95); transition: transform 0.3s ease; }
+        .modal-backdrop.show .modal-content { transform: scale(1); }
+        
+        .toast { transition: opacity 0.3s ease, transform 0.3s ease; }
+        .toast.show { opacity: 1; transform: translateY(0); }
 
-        [contenteditable]:focus {
-            outline: none;
-            background-color: #fefcbf;
-            border-radius: 4px;
-        }
-        .dark [contenteditable]:focus {
-            background-color: #4b5563;
-        }
-        .student-name[contenteditable="true"]:focus {
-            background-color: #fefcbf; /* Cor amarela para edição */
-            box-shadow: 0 0 0 2px #4b5563;
-        }
-        .dark .student-name[contenteditable="true"]:focus {
-            background-color: #4b5563;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-        .animate-shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
-    </style>
+        [contenteditable]:focus {
+            outline: none;
+            background-color: #fefcbf;
+            border-radius: 4px;
+        }
+        .dark [contenteditable]:focus {
+            background-color: #4b5563;
+        }
+        .student-name[contenteditable="true"]:focus {
+            background-color: #fefcbf; /* Cor amarela para edição */
+            box-shadow: 0 0 0 2px #4b5563;
+        }
+        .dark .student-name[contenteditable="true"]:focus {
+            background-color: #4b5563;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        .animate-shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+    </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
 
-    <!-- TELA DE LOGIN -->
-    <div id="login-screen" class="fixed inset-0 bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-4 z-50">
-        <div class="w-full max-w-sm bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8">
-            <h2 class="text-2xl font-bold text-center text-gray-700 dark:text-gray-100 mb-2">Lista Login</h2>
-            <p class="text-center text-gray-500 dark:text-gray-400 mb-6">Por favor, insira a senha para continuar.</p>
-            <form id="login-form">
-                <div class="mb-4 relative">
-                    <label for="password" class="sr-only">Senha</label>
-                    <input type="password" id="password" placeholder="Senha" class="w-full py-2 px-3 pr-10 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                    <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" aria-label="Mostrar/Ocultar senha">
-                        <svg id="eye-open-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                        <svg id="eye-closed-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
-                    </button>
-                </div>
-                <button type="submit" class="w-full bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                    Entrar
-                </button>
-                <p id="login-error" class="text-red-500 text-sm text-center mt-4 h-5"></p>
-            </form>
-        </div>
-    </div>
-
-    <main class="container mx-auto p-4 md:p-8 max-w-4xl hidden">
-        <header class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 mb-8">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h1 class="text-2xl md:text-3xl font-bold text-gray-700 dark:text-gray-100">
-                        Lista de Presença - <span id="className" contenteditable="true" class="font-bold p-1 rounded-md">2° Ano</span>
-                        <span id="savingIndicator" class="text-sm text-gray-400 ml-2 opacity-0 transition-opacity">Salvando...</span>
-                    </h1>
-                    <div class="text-gray-500 dark:text-gray-400 mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm">
-                        <span>Professor(a): <span id="classTeacher" contenteditable="true" class="font-semibold p-1 rounded-md">Nome do Professor</span></span>
-                        <span>Sala: <span id="classRoom" contenteditable="true" class="font-semibold p-1 rounded-md">6</span></span>
-                        <span>Turno: <span id="classShift" contenteditable="true" class="font-semibold p-1 rounded-md">Noite</span></span>
-                        <span>Bimestre: <span id="classBimester" contenteditable="true" class="font-semibold p-1 rounded-md">1º</span></span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button id="logout-btn" class="p-2 rounded-full text-gray-500 hover:bg-red-200 dark:hover:bg-red-700 transition-colors" aria-label="Sair" title="Sair">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                    </button>
-                    <button id="theme-toggle" class="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" aria-label="Alternar tema">
-                        <svg id="theme-toggle-dark-icon" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-                        <svg id="theme-toggle-light-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm-.707 12.122l.707-.707a1 1 0 10-1.414-1.414l-.707.707a1 1 0 001.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
-                    </button>
-                </div>
-            </div>
-            <div class="mt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div class="flex items-center gap-2">
-                    <svg class="text-blue-500" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                    <input type="date" id="attendanceDate" class="py-2 px-3 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div id="currentTime" class="text-sm font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 py-2 px-4 rounded-md"></div>
-            </div>
-        </header>
-
-        <div class="grid md:grid-cols-2 gap-8 mb-8">
-            <section class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6">
-                <h2 class="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-100">Gerenciar Alunos</h2>
-                <div class="flex flex-col gap-4">
-                    <div class="flex flex-col sm:flex-row items-center gap-4">
-                        <input type="text" id="studentName" placeholder="Novo aluno" class="w-full flex-grow py-2 px-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                        <button id="addStudentBtn" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm w-full sm:w-auto flex-shrink-0">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                            Adicionar
-                        </button>
-                    </div>
-                    <div class="flex flex-wrap gap-4">
-                        <button id="importCsvBtn" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
-                            <input type="file" id="csvFileInput" class="hidden" accept=".csv" />
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-up"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L15 2z"/><path d="M14 2v6h6"/><path d="M12 11v6"/><path d="m15 14-3-3-3 3"/></svg>
-                            Importar CSV
-                        </button>
-                        <button id="exportCsvBtn" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-down"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18v-6"></path><path d="m15 15-3 3-3-3"></path></svg>
-                            Exportar CSV
-                        </button>
-                        <button id="pasteListBtn" class="bg-teal-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-teal-600 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-paste"><path d="M12 2H8a2 2 0 0 0-2 2v2h8V4a2 2 0 0 0-2-2Z"/><path d="M16 4h2a2 2 0 0 1 2 2v4h-4V4Z"/><path d="M18 10h4v8a2 2 0 0 1-2 2h-2"/><path d="M6 10H2v8a2 2 0 0 0 2 2h2"/><rect width="8" height="8" x="8" y="12" rx="1"/></svg>
-                           Colar Lista
-                        </button>
-                        <button id="deleteAllStudentsBtn" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                           Apagar Todos
-                        </button>
-                </div>
-            </section>
-            
-            <section class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6">
-                <h2 class="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-100">Ações da Lista</h2>
-                <div class="flex flex-wrap gap-4">
-                    <button id="markAllPresentBtn" class="bg-cyan-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-cyan-600 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-check"><path d="M18 6 7 17l-5-5"></path><path d="m22 10-7.5 7.5L13 16"></path></svg>
-                        Marcar Todos como Presentes
-                    </button>
-                    <button id="clearAllBtn" class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-yellow-600 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eraser"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21H7Z"></path><path d="M22 21H7"></path><path d="m5 12 5 5"></path></svg>
-                        Limpar Marcações
-                    </button>
-                    <button id="exportPdfBtn" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-down"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18v-6"></path><path d="m15 15-3 3-3-3"></path></svg>
-                        Baixar PDF
-                    </button>
-                    <button id="shareBtn" class="bg-indigo-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share-2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg>
-                        Compartilhar
-                    </button>
-                </div>
-            </section>
-        </div>
-
-        <section id="attendance-table-container" class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl overflow-hidden hidden md:block">
-            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div>
-                        <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-100">Lista da Turma</h2>
-                        <p id="list-date-display" class="text-gray-500 dark:text-gray-400 mt-1 text-sm">Marcando presença para: </p>
-                    </div>
-                    <div class="relative w-full sm:w-auto">
-                        <input type="text" id="searchStudent" placeholder="Buscar aluno..." class="py-2 pl-8 pr-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition w-full text-sm">
-                        <svg class="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </div>
-                </div>
-                <div id="attendance-summary" class="mt-4 flex flex-wrap gap-4 text-sm"></div>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full min-w-full text-left">
-                    <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
-                        <tr>
-                            <th class="p-4 font-semibold text-xs text-gray-600 dark:text-gray-300 uppercase tracking-wider">ID</th>
-                            <th class="p-4 font-semibold text-xs text-gray-600 dark:text-gray-300 uppercase tracking-wider">Nome do Aluno</th>
-                            <th class="p-4 text-center font-semibold text-xs text-gray-600 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="studentListTable" class="divide-y divide-gray-200 dark:divide-gray-700">
-                        <tr id="empty-state-table" class="hidden">
-                            <td colspan="4" class="text-center p-8 text-gray-500 dark:text-gray-400">
-                                <p class="font-medium">Nenhum aluno cadastrado.</p>
-                                <p class="text-sm">Comece adicionando um aluno no campo acima.</p>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section id="attendance-card-container" class="md:hidden">
-            <div class="p-4">
-                <div class="flex flex-col gap-4 mb-4">
-                    <div class="relative w-full">
-                        <input type="text" id="searchStudentMobile" placeholder="Buscar aluno..." class="py-2 pl-8 pr-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition w-full text-sm">
-                        <svg class="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </div>
-                    <div id="attendance-summary-mobile" class="flex flex-wrap gap-2 text-sm"></div>
-            </div>
-            <div id="studentListCards" class="flex flex-col gap-4 p-4 pt-0">
-                <div id="empty-state-cards" class="hidden text-center p-8 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-                    <p class="font-medium">Nenhum aluno cadastrado.</p>
-                    <p class="text-sm">Comece adicionando um aluno no campo acima.</p>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-backdrop hidden opacity-0" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-sm w-full transform scale-95 transition-all duration-300 modal-content">
-            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4" id="modalTitle">Confirmar Ação</h3>
-            <p class="text-gray-600 dark:text-gray-300 mb-6" id="modalMessage">Você tem certeza que deseja realizar esta ação?</p>
-            <div class="flex justify-end gap-4">
-                <button id="cancelButton" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 transition" aria-label="Cancelar">Cancelar</button>
-                <button id="confirmButton" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition" aria-label="Confirmar">Confirmar</button>
-            </div>
-        </div>
-    </div>
-    
-    <div id="pasteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-backdrop hidden opacity-0" role="dialog" aria-modal="true" aria-labelledby="pasteModalTitle">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-lg w-full transform scale-95 transition-all duration-300 modal-content">
-            <h3 id="pasteModalTitle" class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Colar Lista de Nomes</h3>
-            <p class="text-gray-600 dark:text-gray-300 mb-4">Cole a lista de nomes abaixo, um nome por linha. Nomes em branco ou duplicados serão ignorados.</p>
-            <textarea id="pasteTextarea" class="w-full h-40 p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="João da Silva&#10;Maria Oliveira&#10;..."></textarea>
-            <div class="flex justify-end gap-4 mt-6">
-                <button id="cancelPasteButton" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 transition">Cancelar</button>
-                <button id="confirmPasteButton" class="px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition">Adicionar Alunos</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="historyModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-backdrop hidden opacity-0" role="dialog" aria-modal="true" aria-labelledby="historyModalTitle">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-2xl w-full transform scale-95 transition-all duration-300 modal-content">
-            <div class="flex justify-between items-center mb-4">
-                <h3 id="historyModalTitle" class="text-xl font-bold text-gray-800 dark:text-gray-100">Histórico de Presença</h3>
-                <button id="closeHistoryModalBtn" class="text-gray-500 hover:text-gray-800 dark:hover:text-gray-300 transition" aria-label="Fechar">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-            <p id="historyStudentName" class="text-gray-600 dark:text-gray-300 mb-4"></p>
-            <div id="historyTableContainer" class="max-h-96 overflow-y-auto">
-                <table class="w-full min-w-full text-left">
-                    <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700 sticky top-0">
-                        <tr>
-                            <th class="p-3 font-semibold text-sm text-gray-600 dark:text-gray-300 uppercase tracking-wider">Data</th>
-                            <th class="p-3 font-semibold text-sm text-gray-600 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historyListBody" class="divide-y divide-gray-200 dark:divide-gray-700">
-                        </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    
-    <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white py-3 px-6 rounded-lg shadow-lg opacity-0 transform translate-y-2 transition-all duration-300">
-        Texto copiado para a área de transferência!
-    </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- Geração de ID Único ---
-            const generateUUID = () => ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
-
-            // Elementos da UI
-            const loginScreen = document.getElementById('login-screen');
-            const loginForm = document.getElementById('login-form');
-            const passwordInput = document.getElementById('password');
-            const loginError = document.getElementById('login-error');
-            const mainContent = document.querySelector('main');
-            const logoutBtn = document.getElementById('logout-btn');
-            const togglePasswordBtn = document.getElementById('togglePassword');
-            const eyeOpenIcon = document.getElementById('eye-open-icon');
-            const eyeClosedIcon = document.getElementById('eye-closed-icon');
-
-            const studentNameInput = document.getElementById('studentName');
-            const addStudentBtn = document.getElementById('addStudentBtn');
-            const studentListTableBody = document.getElementById('studentListTable');
-            const studentListCardsContainer = document.getElementById('studentListCards');
-            const attendanceDateInput = document.getElementById('attendanceDate');
-            const currentTimeDisplay = document.getElementById('currentTime');
-            const listDateDisplay = document.getElementById('list-date-display');
-            const emptyStateTable = document.getElementById('empty-state-table');
-            const emptyStateCards = document.getElementById('empty-state-cards');
-            const classNameSpan = document.getElementById('className');
-            const classTeacherSpan = document.getElementById('classTeacher');
-            const classRoomSpan = document.getElementById('classRoom');
-            const classShiftSpan = document.getElementById('classShift');
-            const classBimesterSpan = document.getElementById('classBimester');
-            const exportPdfBtn = document.getElementById('exportPdfBtn');
-            const shareBtn = document.getElementById('shareBtn');
-            const toast = document.getElementById('toast');
-            const attendanceSummary = document.getElementById('attendance-summary');
-            const attendanceSummaryMobile = document.getElementById('attendance-summary-mobile');
-            const markAllPresentBtn = document.getElementById('markAllPresentBtn');
-            const clearAllBtn = document.getElementById('clearAllBtn');
-            const deleteAllStudentsBtn = document.getElementById('deleteAllStudentsBtn');
-            const pasteListBtn = document.getElementById('pasteListBtn');
-            const searchStudentInput = document.getElementById('searchStudent');
-            const searchStudentMobileInput = document.getElementById('searchStudentMobile');
-            const savingIndicator = document.getElementById('savingIndicator');
-            const themeToggleBtn = document.getElementById('theme-toggle');
-            const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
-            const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
-            const importCsvBtn = document.getElementById('importCsvBtn');
-            const csvFileInput = document.getElementById('csvFileInput');
-            const exportCsvBtn = document.getElementById('exportCsvBtn');
-            const closeHistoryModalBtn = document.getElementById('closeHistoryModalBtn');
-
-
-
-            // Modais
-            const confirmationModal = document.getElementById('confirmationModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalMessage = document.getElementById('modalMessage');
-            const cancelButton = document.getElementById('cancelButton');
-            const confirmButton = document.getElementById('confirmButton');
-            let confirmCallback = null;
-            
-            const pasteModal = document.getElementById('pasteModal');
-            const pasteTextarea = document.getElementById('pasteTextarea');
-            const cancelPasteButton = document.getElementById('cancelPasteButton');
-            const confirmPasteButton = document.getElementById('confirmPasteButton');
-
-            const historyModal = document.getElementById('historyModal');
-            const historyStudentName = document.getElementById('historyStudentName');
-            const historyListBody = document.getElementById('historyListBody');
-
-            // --- Gerenciamento de Dados (localStorage) ---
-            let students = [];
-            let attendance = {};
-            let classDetails = {};
-            let editingStudentId = null;
-
-            const loadData = () => {
-                students = JSON.parse(localStorage.getItem('students')) || [];
-                attendance = JSON.parse(localStorage.getItem('attendance')) || {};
-                classDetails = JSON.parse(localStorage.getItem('classDetails')) || {
-                    name: '2° Ano',
-                    teacher: 'Nome do Professor',
-                    room: '6',
-                    shift: 'Noite',
-                    bimester: '1º'
-                };
-            };
-
-            const showSavingStatus = () => {
-                savingIndicator.classList.remove('opacity-0');
-                savingIndicator.classList.add('opacity-100');
-                setTimeout(() => {
-                    savingIndicator.classList.remove('opacity-100');
-                    savingIndicator.classList.add('opacity-0');
-                }, 1500);
-            };
-
-            const saveStudents = () => {
-                localStorage.setItem('students', JSON.stringify(students));
-                showSavingStatus();
-            };
-
-            const saveAttendance = () => {
-                localStorage.setItem('attendance', JSON.stringify(attendance));
-                showSavingStatus();
-            };
-
-            const saveClassDetails = () => {
-                classDetails.name = classNameSpan.textContent.trim();
-                classDetails.teacher = classTeacherSpan.textContent.trim();
-                classDetails.room = classRoomSpan.textContent.trim();
-                classDetails.shift = classShiftSpan.textContent.trim();
-                classDetails.bimester = classBimesterSpan.textContent.trim();
-                localStorage.setItem('classDetails', JSON.stringify(classDetails));
-                showSavingStatus();
-            };
-            
-            const sortStudents = () => {
-                students.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' }));
-            };
-
-            // --- Funções do Relógio e Data ---
-            const setCurrentDate = () => {
-                const today = new Date();
-                const formattedDate = today.toISOString().split('T')[0];
-                attendanceDateInput.value = formattedDate;
-                updateListDateDisplay(formattedDate);
-            };
-
-            const updateTime = () => {
-                currentTimeDisplay.textContent = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            };
-
-            const updateListDateDisplay = (date) => {
-                const [year, month, day] = date.split('-');
-                const displayDate = new Date(year, month - 1, day);
-                listDateDisplay.textContent = `Marcando presença para: ${displayDate.toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
-            };
-
-            // --- Funções do Modal e Toast ---
-            const showModal = (targetModal, title, message, onConfirm, isDanger = false) => {
-                const modalDiv = document.getElementById(targetModal);
-                if (!modalDiv) return;
-
-                if (targetModal === 'confirmationModal') {
-                    modalTitle.textContent = title;
-                    modalMessage.textContent = message;
-                    confirmButton.className = `px-4 py-2 text-white rounded-md transition ${isDanger ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'}`;
-                    confirmCallback = onConfirm;
-                }
-                
-                modalDiv.classList.remove('hidden');
-                setTimeout(() => modalDiv.classList.add('show'), 10);
-            };
-
-            const hideModal = (targetModal) => {
-                const modalDiv = document.getElementById(targetModal);
-                if (!modalDiv) return;
-
-                modalDiv.classList.remove('show');
-                setTimeout(() => {
-                    modalDiv.classList.add('hidden');
-                    if (targetModal === 'confirmationModal') confirmCallback = null;
-                }, 300);
-            };
-            
-            const showToast = (message) => {
-                toast.textContent = message;
-                toast.classList.add('show');
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 3000);
-            };
-
-            // --- Lógica de Gerenciamento de Alunos ---
-            const renderStudents = (searchTerm = '') => {
-                studentListTableBody.innerHTML = '';
-                studentListCardsContainer.innerHTML = '';
-                
-                const filteredStudents = students.filter(student =>
-                    student.name.toLowerCase().includes(searchTerm.toLowerCase())
-                );
-
-                if (students.length === 0) {
-                    emptyStateTable.classList.remove('hidden');
-                    emptyStateCards.classList.remove('hidden');
-                    studentListTableBody.appendChild(emptyStateTable);
-                    studentListCardsContainer.innerHTML = emptyStateCards.outerHTML;
-                } else if (filteredStudents.length === 0) {
-                    const noResultsRow = document.createElement('tr');
-                    noResultsRow.innerHTML = `<td colspan="4" class="text-center p-8 text-gray-500 dark:text-gray-400">Nenhum aluno encontrado.</td>`;
-                    studentListTableBody.appendChild(noResultsRow);
-                    const noResultsCard = document.createElement('div');
-                    noResultsCard.className = 'text-center p-8 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg shadow-md';
-                    noResultsCard.textContent = 'Nenhum aluno encontrado.';
-                    studentListCardsContainer.appendChild(noResultsCard);
-                } else {
-                    emptyStateTable.classList.add('hidden');
-                    emptyStateCards.classList.add('hidden');
-                }
-
-                const selectedDate = attendanceDateInput.value;
-                const attendanceForDate = attendance[selectedDate] || {};
-                
-                let presentCount = 0;
-                let absentCount = 0;
-
-                filteredStudents.forEach((student, index) => {
-                    const status = attendanceForDate[student.id] || 'nao_marcado';
-                    if (status === 'presente') presentCount++;
-                    if (status === 'ausente') absentCount++;
-                    
-                    // Renderização da tabela para desktop
-                    const row = document.createElement('tr');
-                    row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors';
-                    row.setAttribute('data-student-id', student.id);
-                    row.innerHTML = `
-                        <td class="p-4 text-gray-500 dark:text-gray-400 font-mono text-sm">${index + 1}</td>
-                        <td class="p-4 font-medium text-gray-800 dark:text-gray-200">
-                            <span class="student-name" contenteditable="true">${student.name}</span>
-                            <span class="status-icon ml-2 text-xl align-middle">${status === 'presente' ? '✅' : status === 'ausente' ? '❌' : ''}</span>
-                        </td>
-                        <td class="p-4 text-center">
-                            <div class="flex justify-center gap-2 status-buttons">
-                                <button class="status-btn w-8 h-8 rounded-md text-sm font-bold transition-all ${status === 'presente' ? 'bg-green-500 text-white scale-110' : 'bg-gray-200 dark:bg-gray-700 dark:hover:bg-green-700 hover:bg-green-200'}" data-status="presente" title="Presente" aria-label="Marcar como presente">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                                </button>
-                                <button class="status-btn w-8 h-8 rounded-md text-sm font-bold transition-all ${status === 'ausente' ? 'bg-red-500 text-white scale-110' : 'bg-gray-200 dark:bg-gray-700 dark:hover:bg-red-700 hover:bg-red-200'}" data-status="ausente" title="Faltou" aria-label="Marcar como faltou">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                </button>
-                            </div>
-                        </td>
-                        <td class="p-4 text-center actions-col">
-                            <div class="flex justify-center gap-2">
-                                <button class="history-btn p-1 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition" title="Ver Histórico" aria-label="Ver histórico do aluno">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-history"><path d="M3 3v5h5"/><path d="M3.56 16.7A10 10 0 1 0 12 3v5"/></svg>
-                                </button>
-                                <button class="delete-btn p-1 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition" title="Excluir Aluno" aria-label="Excluir aluno">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                                </button>
-                            </div>
-                        </td>
-                    `;
-                    studentListTableBody.appendChild(row);
-
-                    // Renderização dos cartões para mobile
-                    const card = document.createElement('div');
-                    card.className = 'bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-4 flex flex-col gap-2';
-                    card.setAttribute('data-student-id', student.id);
-                    card.innerHTML = `
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">ID: ${index + 1}</span>
-                            <div class="flex gap-2">
-                                <button class="history-btn text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition" title="Ver Histórico" aria-label="Ver histórico do aluno">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 3v5h5"/><path d="M3.56 16.7A10 10 0 1 0 12 3v5"/></svg>
-                                </button>
-                                <button class="delete-btn text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition" title="Excluir Aluno" aria-label="Excluir aluno">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                                </button>
-                            </div>
-                        </div>
-                        <h4 class="text-lg font-bold">
-                            <span class="student-name" contenteditable="true">${student.name}</span>
-                            <span class="status-icon ml-2 text-xl align-middle">${status === 'presente' ? '✅' : status === 'ausente' ? '❌' : ''}</span>
-                        </h4>
-                        <div class="flex justify-start gap-2 status-buttons mt-2">
-                            <button class="status-btn px-4 py-2 rounded-md font-bold transition-all ${status === 'presente' ? 'bg-green-500 text-white scale-105' : 'bg-gray-200 dark:bg-gray-700 dark:hover:bg-green-700 hover:bg-green-200'}" data-status="presente" title="Presente" aria-label="Marcar como presente">Presente</button>
-                            <button class="status-btn px-4 py-2 rounded-md font-bold transition-all ${status === 'ausente' ? 'bg-red-500 text-white scale-105' : 'bg-gray-200 dark:bg-gray-700 dark:hover:bg-red-700 hover:bg-red-200'}" data-status="ausente" title="Faltou" aria-label="Marcar como faltou">Faltou</button>
-                        </div>
-                    `;
-                    studentListCardsContainer.appendChild(card);
-                });
-
-                const notMarkedCount = filteredStudents.length - presentCount - absentCount;
-                const summaryHtml = `
-                    <span class="flex items-center gap-2 font-semibold text-green-600 bg-green-100 dark:bg-green-900/50 dark:text-green-300 px-3 py-1 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
-                        Presentes: ${presentCount}
-                    </span>
-                    <span class="flex items-center gap-2 font-semibold text-red-600 bg-red-100 dark:bg-red-900/50 dark:text-red-300 px-3 py-1 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                        Ausentes: ${absentCount}
-                    </span>
-                    <span class="flex items-center gap-2 font-semibold text-gray-600 bg-gray-100 dark:bg-gray-700/50 dark:text-gray-300 px-3 py-1 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                        Não Marcados: ${notMarkedCount}
-                    </span>
-                `;
-                attendanceSummary.innerHTML = summaryHtml;
-                attendanceSummaryMobile.innerHTML = summaryHtml;
-            };
-
-            const addStudent = () => {
-                const name = studentNameInput.value.trim();
-                if (name) {
-                    students.push({ id: generateUUID(), name: name });
-                    sortStudents();
-                    saveStudents();
-                    renderStudents(searchStudentInput.value);
-                    studentNameInput.value = '';
-                    studentNameInput.focus();
-                    showToast('Aluno adicionado com sucesso!');
-                }
-            };
-
-            const deleteStudent = (id) => {
-                const student = students.find(s => s.id === id);
-                showModal('confirmationModal', 'Excluir Aluno', `Tem certeza que deseja excluir "${student.name}"? Esta ação não pode ser desfeita.`, () => {
-                    students = students.filter(s => s.id !== id);
-                    saveStudents();
-                    Object.keys(attendance).forEach(date => {
-                        delete attendance[date][id];
-                    });
-                    saveAttendance();
-                    renderStudents(searchStudentInput.value);
-                    showToast('Aluno excluído com sucesso.');
-                }, true);
-            };
-            
-            const handleStudentNameEdit = (e) => {
-                const nameSpan = e.target;
-                const newName = nameSpan.textContent.trim();
-                const studentId = nameSpan.closest('[data-student-id]').dataset.studentId;
-                const student = students.find(s => s.id === studentId);
-                
-                if (newName && student && newName !== student.name) {
-                    student.name = newName;
-                    sortStudents();
-                    saveStudents();
-                    renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
-                    showToast('Nome do aluno atualizado!');
-                } else {
-                    nameSpan.textContent = student.name;
-                }
-            };
-
-            const setAttendanceStatus = (studentId, status) => {
-                const selectedDate = attendanceDateInput.value;
-                if (!attendance[selectedDate]) {
-                    attendance[selectedDate] = {};
-                }
-                
-                if (attendance[selectedDate][studentId] === status) {
-                    delete attendance[selectedDate][studentId];
-                } else {
-                    attendance[selectedDate][studentId] = status;
-                }
-                
-                saveAttendance();
-                renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
-            };
-
-            const showStudentHistory = (studentId) => {
-                const student = students.find(s => s.id === studentId);
-                if (!student) return;
-
-                historyStudentName.textContent = `Histórico de: ${student.name}`;
-                historyListBody.innerHTML = '';
-                const dates = Object.keys(attendance).sort().reverse();
-
-                let hasRecords = false;
-                dates.forEach(date => {
-                    const status = attendance[date]?.[student.id];
-                    if (!status) return;
-
-                    hasRecords = true;
-                    let statusText = '';
-                    let statusColor = '';
-
-                    if (status === 'presente') {
-                        statusText = 'Presente ✅';
-                    } else if (status === 'ausente') {
-                        statusText = 'Ausente ❌';
-                    }
-
-                    const row = document.createElement('tr');
-                    row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors';
-                    row.innerHTML = `
-                        <td class="p-3 text-sm">${new Date(date.replace(/-/g, '/')).toLocaleDateString('pt-BR')}</td>
-                        <td class="p-3 text-sm font-semibold ${statusColor}">${statusText}</td>
-                    `;
-                    historyListBody.appendChild(row);
-                });
-
-                if (!hasRecords) {
-                    historyListBody.innerHTML = `<tr><td colspan="2" class="p-4 text-center text-gray-500">Nenhum registro de presença para este aluno.</td></tr>`;
-                }
-                
-                showModal('historyModal');
-            };
-            
-            // --- Funções de Ações ---
-            const exportToCSV = () => {
-                if (students.length === 0) {
-                    showToast('Nenhum aluno para exportar.');
-                    return;
-                }
-
-                let csvContent = `Professor(a):,"${classDetails.teacher}"\n`;
-                csvContent += "ID,Nome,";
-                const sortedDates = Object.keys(attendance).sort();
-                csvContent += sortedDates.join(',') + "\n";
-
-                students.forEach(student => {
-                    let row = `${student.id},"${student.name}",`;
-                    const statusData = sortedDates.map(date => {
-                        const status = attendance[date]?.[student.id] || 'nao_marcado';
-                        return status;
-                    }).join(',');
-                    row += statusData;
-                    csvContent += row + "\n";
-                });
-
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement("a");
-                const url = URL.createObjectURL(blob);
-                link.setAttribute("href", url);
-                link.setAttribute("download", `lista_presenca_${classDetails.name.replace(/\s/g, '_')}.csv`);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            };
-
-            const importFromCSV = (event) => {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const text = e.target.result;
-                    const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
-
-                    if (lines.length === 0) {
-                        showToast('Arquivo CSV vazio.');
-                        return;
-                    }
-
-                    const names = lines.map(line => line.split(',')[0].trim().replace(/"/g, '')).filter(Boolean);
-                    
-                    showModal('confirmationModal', 'Importar Alunos via CSV', `Isso substituirá sua lista atual por ${names.length} aluno(s) do arquivo. Deseja continuar?`, () => {
-                        students = names.map(name => ({ id: generateUUID(), name: name }));
-                        attendance = {}; // Limpa o histórico de presença
-                        sortStudents();
-                        saveStudents();
-                        saveAttendance();
-                        renderStudents();
-                        showToast(`${students.length} alunos importados com sucesso!`);
-                    }, true);
-                };
-                reader.readAsText(file);
-                event.target.value = '';
-            };
-
-            const exportToPDF = () => {
-                if (students.length === 0) {
-                    showToast('Nenhum aluno para exportar.');
-                    return;
-                }
-
-                const dateValue = new Date(attendanceDateInput.value.replace(/-/g, '/')).toLocaleDateString('pt-BR');
-                const attendanceForDate = attendance[attendanceDateInput.value] || {};
-                
-                let tableRows = '';
-                students.forEach((student, index) => {
-                    const status = attendanceForDate[student.id];
-                    let statusText = 'Não Marcado';
-                    if (status === 'presente') statusText = 'Presente';
-                    if (status === 'ausente') statusText = 'Faltou';
-                    
-                    tableRows += `<tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">${index + 1}</td><td style="padding: 8px;">${student.name}</td><td style="padding: 8px; text-align: center;">${statusText}</td></tr>`;
-                });
-
-                const pdfContent = `<div style="font-family: 'Inter', sans-serif; color: black; padding: 20px;"><h1 style="font-size: 24px; font-weight: bold; text-align: center;">Lista de Presença</h1><h2 style="font-size: 18px; text-align: center;">Turma: ${classDetails.name}</h2><p style="font-size: 14px; text-align: center;">Professor(a): ${classDetails.teacher}</p><p style="font-size: 14px; text-align: center;">Data: ${dateValue}</p><table style="width: 100%; border-collapse: collapse;"><thead><tr style="background-color: #f2f2f2;"><th style="padding: 8px; text-align: left;">ID</th><th style="padding: 8px; text-align: left;">Nome</th><th style="padding: 8px; text-align: center;">Status</th></tr></thead><tbody>${tableRows}</tbody></table></div>`;
-
-                const opt = {
-                    margin: 1, filename: `lista_presenca_${classDetails.name.replace(/\s/g, '_')}_${attendanceDateInput.value}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-                };
-
-                html2pdf().from(pdfContent).set(opt).save();
-            };
-
-            const shareAttendance = () => {
-                const selectedDate = attendanceDateInput.value;
-                const attendanceForDate = attendance[selectedDate] || {};
-                const dateValue = new Date(selectedDate.replace(/-/g, '/')).toLocaleDateString('pt-BR');
-
-                const presentStudents = students.filter(s => attendanceForDate[s.id] === 'presente').map(s => s.name);
-                const absentStudents = students.filter(s => attendanceForDate[s.id] === 'ausente').map(s => s.name);
-
-                let shareText = `*Resumo da Presença - ${dateValue}*\n\n` +
-                                `*Turma:* ${classDetails.name}\n` +
-                                `*Professor(a):* ${classDetails.teacher}\n\n` +
-                                `✅ *Presentes (${presentStudents.length}):*\n` +
-                                (presentStudents.length > 0 ? presentStudents.sort().join('\n') : 'Nenhum') + '\n\n' +
-                                `❌ *Faltas (${absentStudents.length}):*\n` +
-                                (absentStudents.length > 0 ? absentStudents.sort().join('\n') : 'Nenhuma');
-
-                if (navigator.share) {
-                    navigator.share({ title: `Presença - ${classDetails.name}`, text: shareText }).catch(console.error);
-                } else {
-                    const textArea = document.createElement('textarea');
-                    textArea.value = shareText;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    try {
-                        document.execCommand('copy');
-                        showToast('Resumo copiado para a área de transferência!');
-                    } catch (err) {
-                        showToast('Erro ao copiar texto.');
-                    }
-                    document.body.removeChild(textArea);
-                }
-            };
-            
-            const markAll = (status) => {
-                const selectedDate = attendanceDateInput.value;
-                if (!attendance[selectedDate]) attendance[selectedDate] = {};
-                
-                students.forEach(student => {
-                    attendance[selectedDate][student.id] = status;
-                });
-                
-                saveAttendance();
-                renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
-            };
-
-            const clearAll = () => {
-                showModal('confirmationModal', 'Limpar Marcações', 'Você tem certeza que deseja limpar todas as marcações de presença para a data selecionada?', () => {
-                    const selectedDate = attendanceDateInput.value;
-                    attendance[selectedDate] = {};
-                    saveAttendance();
-                    renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
-                    showToast('Marcações limpas!');
-                }, true);
-            };
-            
-            const deleteAllStudents = () => {
-                showModal('confirmationModal', 'Apagar Todos os Alunos', 'Isso apagará todos os alunos e o histórico de presença. Esta ação é irreversível.', () => {
-                    students = [];
-                    attendance = {};
-                    saveStudents();
-                    saveAttendance();
-                    renderStudents();
-                    showToast('Lista de alunos apagada.');
-                }, true);
-            };
-            
-            const addStudentsFromPaste = () => {
-                const namesText = pasteTextarea.value.trim();
-                if (!namesText) { hideModal('pasteModal'); return; }
-
-                const existingNames = new Set(students.map(s => s.name.toLowerCase()));
-                const namesToAdd = namesText.split(/\r?\n/).map(name => name.trim()).filter(name => name && !existingNames.has(name.toLowerCase()));
-                
-                if (namesToAdd.length > 0) {
-                    namesToAdd.forEach(name => students.push({ id: generateUUID(), name: name }));
-                    sortStudents();
-                    saveStudents();
-                    renderStudents();
-                    showToast(`${namesToAdd.length} aluno(s) adicionado(s)!`);
-                } else {
-                    showToast('Nenhum nome novo para adicionar.');
-                }
-                
-                pasteTextarea.value = '';
-                hideModal('pasteModal');
-            };
-
-            // --- Gerenciamento do Tema Escuro ---
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-            const applyTheme = (theme) => {
-                if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                    themeToggleDarkIcon.classList.remove('hidden');
-                    themeToggleLightIcon.classList.add('hidden');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                    themeToggleDarkIcon.classList.add('hidden');
-                    themeToggleLightIcon.classList.remove('hidden');
-                }
-                localStorage.setItem('theme', theme);
-            };
-            const toggleTheme = () => {
-                applyTheme(localStorage.getItem('theme') === 'dark' ? 'light' : 'dark');
-            };
-            
-            // --- Lógica de Login ---
-            // AVISO: Em uma aplicação real, não armazene senhas no código. Use um backend para autenticação segura.
-            const CORRECT_PASSWORD = "1234"; // <-- MUDE SUA SENHA AQUI
-
-            const checkLogin = () => {
-                if (sessionStorage.getItem('isLoggedIn') === 'true') {
-                    loginScreen.classList.add('hidden');
-                    mainContent.classList.remove('hidden');
-                    startAppLogic();
-                } else {
-                    loginScreen.classList.remove('hidden');
-                    mainContent.classList.add('hidden');
-                }
-            };
-
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                if (passwordInput.value === CORRECT_PASSWORD) {
-                    sessionStorage.setItem('isLoggedIn', 'true');
-                    checkLogin();
-                } else {
-                    loginError.textContent = 'Senha incorreta. Tente novamente.';
-                    passwordInput.value = '';
-                    loginScreen.querySelector('div').classList.add('animate-shake');
-                    setTimeout(() => {
-                        loginScreen.querySelector('div').classList.remove('animate-shake');
-                    }, 500);
-                }
-            });
-
-            logoutBtn.addEventListener('click', () => {
-                sessionStorage.removeItem('isLoggedIn');
-                location.reload();
-            });
-
-            togglePasswordBtn.addEventListener('click', () => {
-                const isPassword = passwordInput.type === 'password';
-                passwordInput.type = isPassword ? 'text' : 'password';
-                eyeOpenIcon.classList.toggle('hidden', isPassword);
-                eyeClosedIcon.classList.toggle('hidden', !isPassword);
-            });
-
-            // --- Event Listeners ---
-            const addAppEventListeners = () => {
-                addStudentBtn.addEventListener('click', addStudent);
-                studentNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') addStudent(); });
-                attendanceDateInput.addEventListener('change', () => {
-                    updateListDateDisplay(attendanceDateInput.value);
-                    renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
-                });
-                const handleSearch = () => renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
-                searchStudentInput.addEventListener('input', handleSearch);
-                searchStudentMobileInput.addEventListener('input', handleSearch);
-                [classNameSpan, classTeacherSpan, classRoomSpan, classShiftSpan, classBimesterSpan].forEach(el => {
-                    el.addEventListener('blur', saveClassDetails);
-                    el.addEventListener('keydown', (e) => { if(e.key === 'Enter') { e.preventDefault(); el.blur(); }});
-                });
-                exportPdfBtn.addEventListener('click', exportToPDF);
-                shareBtn.addEventListener('click', shareAttendance);
-                markAllPresentBtn.addEventListener('click', () => markAll('presente'));
-                clearAllBtn.addEventListener('click', clearAll);
-                deleteAllStudentsBtn.addEventListener('click', deleteAllStudents);
-                pasteListBtn.addEventListener('click', () => showModal('pasteModal'));
-                confirmPasteButton.addEventListener('click', addStudentsFromPaste);
-                themeToggleBtn.addEventListener('click', toggleTheme);
-                importCsvBtn.addEventListener('click', () => csvFileInput.click());
-                csvFileInput.addEventListener('change', importFromCSV);
-                exportCsvBtn.addEventListener('click', exportToCSV);
-
-                const handleStudentAction = (e) => {
-                    const target = e.target;
-                    const rowOrCard = target.closest('[data-student-id]');
-                    if (!rowOrCard) return;
-                    const studentId = rowOrCard.dataset.studentId;
-
-                    if (target.closest('.status-btn')) {
-                        const status = target.closest('.status-btn').dataset.status;
-                        setAttendanceStatus(studentId, status);
-                    }
-                    if (target.closest('.delete-btn')) deleteStudent(studentId);
-                    if (target.closest('.history-btn')) showStudentHistory(studentId);
-                };
-                studentListTableBody.addEventListener('click', handleStudentAction);
-                studentListCardsContainer.addEventListener('click', handleStudentAction);
-
-                studentListTableBody.addEventListener('blur', handleStudentNameEdit, true);
-                studentListTableBody.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && e.target.classList.contains('student-name')) {
-                        e.preventDefault();
-                        e.target.blur();
-                    }
-                });
-
-                studentListCardsContainer.addEventListener('blur', handleStudentNameEdit, true);
-                studentListCardsContainer.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && e.target.classList.contains('student-name')) {
-                        e.preventDefault();
-                        e.target.blur();
-                    }
-                });
-
-                [confirmationModal, pasteModal, historyModal].forEach(modal => {
-                    modal.addEventListener('click', (e) => { if (e.target === modal) hideModal(modal.id); });
-                });
-                closeHistoryModalBtn.addEventListener('click', () => hideModal('historyModal'));
-                cancelButton.addEventListener('click', () => hideModal('confirmationModal'));
-                confirmButton.addEventListener('click', () => { if (confirmCallback) confirmCallback(); hideModal('confirmationModal'); });
-                cancelPasteButton.addEventListener('click', () => hideModal('pasteModal'));
-            };
-
-            // --- Inicialização ---
-            const startAppLogic = () => {
-                loadData();
-                classNameSpan.textContent = classDetails.name;
-                classTeacherSpan.textContent = classDetails.teacher;
-                classRoomSpan.textContent = classDetails.room;
-                classShiftSpan.textContent = classDetails.shift;
-                classBimesterSpan.textContent = classDetails.bimester;
-                sortStudents();
-                setCurrentDate();
-                setInterval(updateTime, 1000);
-                updateTime();
-                renderStudents();
-                const storedTheme = localStorage.getItem('theme');
-                applyTheme(storedTheme ? storedTheme : (prefersDark.matches ? 'dark' : 'light'));
-                addAppEventListeners();
-            };
-
-            checkLogin();
-        });
-    </script>
+    <main class="container mx-auto p-4 md:p-8 max-w-4xl">
+        <header class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 mb-8">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-700 dark:text-gray-100">
+                        Lista de Presença - <span id="className" contenteditable="true" class="font-bold p-1 rounded-md">2° Ano</span>
+                        <span id="savingIndicator" class="text-sm text-gray-400 ml-2 opacity-0 transition-opacity">Salvando...</span>
+                    </h1>
+                    <div class="text-gray-500 dark:text-gray-400 mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+                        <span>Professor(a): <span id="classTeacher" contenteditable="true" class="font-semibold p-1 rounded-md">Nome do Professor</span></span>
+                        <span>Sala: <span id="classRoom" contenteditable="true" class="font-semibold p-1 rounded-md">6</span></span>
+                        <span>Turno: <span id="classShift" contenteditable="true" class="font-semibold p-1 rounded-md">Noite</span></span>
+                        <span>Bimestre: <span id="classBimester" contenteditable="true" class="font-semibold p-1 rounded-md">1º</span></span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="theme-toggle" class="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" aria-label="Alternar tema">
+                        <svg id="theme-toggle-dark-icon" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                        <svg id="theme-toggle-light-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm-.707 12.122l.707-.707a1 1 0 10-1.414-1.414l-.707.707a1 1 0 001.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="mt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <svg class="text-blue-500" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <input type="date" id="attendanceDate" class="py-2 px-3 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div id="currentTime" class="text-sm font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 py-2 px-4 rounded-md"></div>
+            </div>
+        </header>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <section class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-100">Gerenciar Alunos</h2>
+                <div class="flex flex-col gap-4">
+                    <div class="flex flex-col sm:flex-row items-center gap-4">
+                        <input type="text" id="studentName" placeholder="Novo aluno" class="w-full flex-grow py-2 px-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        <button id="addStudentBtn" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm w-full sm:w-auto flex-shrink-0">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            Adicionar
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap gap-4">
+                        <button id="importCsvBtn" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
+                            <input type="file" id="csvFileInput" class="hidden" accept=".csv" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-up"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L15 2z"/><path d="M14 2v6h6"/><path d="M12 11v6"/><path d="m15 14-3-3-3 3"/></svg>
+                            Importar CSV
+                        </button>
+                        <button id="exportCsvBtn" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-down"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18v-6"></path><path d="m15 15-3 3-3-3"></path></svg>
+                            Exportar CSV
+                        </button>
+                        <button id="pasteListBtn" class="bg-teal-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-teal-600 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-paste"><path d="M12 2H8a2 2 0 0 0-2 2v2h8V4a2 2 0 0 0-2-2Z"/><path d="M16 4h2a2 2 0 0 1 2 2v4h-4V4Z"/><path d="M18 10h4v8a2 2 0 0 1-2 2h-2"/><path d="M6 10H2v8a2 2 0 0 0 2 2h2"/><rect width="8" height="8" x="8" y="12" rx="1"/></svg>
+                           Colar Lista
+                        </button>
+                        <button id="deleteAllStudentsBtn" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                           Apagar Todos
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-100">Ações da Lista</h2>
+                <div class="flex flex-wrap gap-4">
+                    <button id="markAllPresentBtn" class="bg-cyan-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-cyan-600 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-check"><path d="M18 6 7 17l-5-5"></path><path d="m22 10-7.5 7.5L13 16"></path></svg>
+                        Marcar Todos como Presentes
+                    </button>
+                    <button id="clearAllBtn" class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-yellow-600 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eraser"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21H7Z"></path><path d="M22 21H7"></path><path d="m5 12 5 5"></path></svg>
+                        Limpar Marcações
+                    </button>
+                    <button id="exportPdfBtn" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-down"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18v-6"></path><path d="m15 15-3 3-3-3"></path></svg>
+                        Baixar PDF
+                    </button>
+                    <button id="shareBtn" class="bg-indigo-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center gap-2 whitespace-nowrap text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share-2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg>
+                        Compartilhar
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <section id="attendance-table-container" class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl overflow-hidden hidden md:block">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-100">Lista da Turma</h2>
+                        <p id="list-date-display" class="text-gray-500 dark:text-gray-400 mt-1 text-sm">Marcando presença para: </p>
+                    </div>
+                    <div class="relative w-full sm:w-auto">
+                        <input type="text" id="searchStudent" placeholder="Buscar aluno..." class="py-2 pl-8 pr-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition w-full text-sm">
+                        <svg class="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+                <div id="attendance-summary" class="mt-4 flex flex-wrap gap-4 text-sm"></div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full min-w-full text-left">
+                    <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
+                        <tr>
+                            <th class="p-4 font-semibold text-xs text-gray-600 dark:text-gray-300 uppercase tracking-wider">ID</th>
+                            <th class="p-4 font-semibold text-xs text-gray-600 dark:text-gray-300 uppercase tracking-wider">Nome do Aluno</th>
+                            <th class="p-4 text-center font-semibold text-xs text-gray-600 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                            <th class="p-4 text-center font-semibold text-xs text-gray-600 dark:text-gray-300 uppercase tracking-wider actions-col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentListTable" class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <tr id="empty-state-table" class="hidden">
+                            <td colspan="4" class="text-center p-8 text-gray-500 dark:text-gray-400">
+                                <p class="font-medium">Nenhum aluno cadastrado.</p>
+                                <p class="text-sm">Comece adicionando um aluno no campo acima.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="attendance-card-container" class="md:hidden">
+            <div class="p-4">
+                <div class="flex flex-col gap-4 mb-4">
+                    <div class="relative w-full">
+                        <input type="text" id="searchStudentMobile" placeholder="Buscar aluno..." class="py-2 pl-8 pr-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition w-full text-sm">
+                        <svg class="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <div id="attendance-summary-mobile" class="flex flex-wrap gap-2 text-sm"></div>
+                </div>
+            </div>
+            <div id="studentListCards" class="flex flex-col gap-4 p-4 pt-0">
+                <div id="empty-state-cards" class="hidden text-center p-8 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                    <p class="font-medium">Nenhum aluno cadastrado.</p>
+                    <p class="text-sm">Comece adicionando um aluno no campo acima.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-backdrop hidden opacity-0" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-sm w-full transform scale-95 transition-all duration-300 modal-content">
+            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4" id="modalTitle">Confirmar Ação</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-6" id="modalMessage">Você tem certeza que deseja realizar esta ação?</p>
+            <div class="flex justify-end gap-4">
+                <button id="cancelButton" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 transition" aria-label="Cancelar">Cancelar</button>
+                <button id="confirmButton" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition" aria-label="Confirmar">Confirmar</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="pasteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-backdrop hidden opacity-0" role="dialog" aria-modal="true" aria-labelledby="pasteModalTitle">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-lg w-full transform scale-95 transition-all duration-300 modal-content">
+            <h3 id="pasteModalTitle" class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Colar Lista de Nomes</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">Cole a lista de nomes abaixo, um nome por linha. Nomes em branco ou duplicados serão ignorados.</p>
+            <textarea id="pasteTextarea" class="w-full h-40 p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="João da Silva&#10;Maria Oliveira&#10;..."></textarea>
+            <div class="flex justify-end gap-4 mt-6">
+                <button id="cancelPasteButton" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 transition">Cancelar</button>
+                <button id="confirmPasteButton" class="px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition">Adicionar Alunos</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="historyModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-backdrop hidden opacity-0" role="dialog" aria-modal="true" aria-labelledby="historyModalTitle">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-2xl w-full transform scale-95 transition-all duration-300 modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="historyModalTitle" class="text-xl font-bold text-gray-800 dark:text-gray-100">Histórico de Presença</h3>
+                <button id="closeHistoryModalBtn" class="text-gray-500 hover:text-gray-800 dark:hover:text-gray-300 transition" aria-label="Fechar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <p id="historyStudentName" class="text-gray-600 dark:text-gray-300 mb-4"></p>
+            <div id="historyTableContainer" class="max-h-96 overflow-y-auto">
+                <table class="w-full min-w-full text-left">
+                    <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700 sticky top-0">
+                        <tr>
+                            <th class="p-3 font-semibold text-sm text-gray-600 dark:text-gray-300 uppercase tracking-wider">Data</th>
+                            <th class="p-3 font-semibold text-sm text-gray-600 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyListBody" class="divide-y divide-gray-200 dark:divide-gray-700">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white py-3 px-6 rounded-lg shadow-lg opacity-0 transform translate-y-2 transition-all duration-300">
+        Texto copiado para a área de transferência!
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Geração de ID Único ---
+            const generateUUID = () => ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
+
+            // Elementos da UI
+            const studentNameInput = document.getElementById('studentName');
+            const addStudentBtn = document.getElementById('addStudentBtn');
+            const studentListTableBody = document.getElementById('studentListTable');
+            const studentListCardsContainer = document.getElementById('studentListCards');
+            const attendanceDateInput = document.getElementById('attendanceDate');
+            const currentTimeDisplay = document.getElementById('currentTime');
+            const listDateDisplay = document.getElementById('list-date-display');
+            const emptyStateTable = document.getElementById('empty-state-table');
+            const emptyStateCards = document.getElementById('empty-state-cards');
+            const classNameSpan = document.getElementById('className');
+            const classTeacherSpan = document.getElementById('classTeacher');
+            const classRoomSpan = document.getElementById('classRoom');
+            const classShiftSpan = document.getElementById('classShift');
+            const classBimesterSpan = document.getElementById('classBimester');
+            const exportPdfBtn = document.getElementById('exportPdfBtn');
+            const shareBtn = document.getElementById('shareBtn');
+            const toast = document.getElementById('toast');
+            const attendanceSummary = document.getElementById('attendance-summary');
+            const attendanceSummaryMobile = document.getElementById('attendance-summary-mobile');
+            const markAllPresentBtn = document.getElementById('markAllPresentBtn');
+            const clearAllBtn = document.getElementById('clearAllBtn');
+            const deleteAllStudentsBtn = document.getElementById('deleteAllStudentsBtn');
+            const pasteListBtn = document.getElementById('pasteListBtn');
+            const searchStudentInput = document.getElementById('searchStudent');
+            const searchStudentMobileInput = document.getElementById('searchStudentMobile');
+            const savingIndicator = document.getElementById('savingIndicator');
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+            const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+            const importCsvBtn = document.getElementById('importCsvBtn');
+            const csvFileInput = document.getElementById('csvFileInput');
+            const exportCsvBtn = document.getElementById('exportCsvBtn');
+            const closeHistoryModalBtn = document.getElementById('closeHistoryModalBtn');
+
+            // Modais
+            const confirmationModal = document.getElementById('confirmationModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const cancelButton = document.getElementById('cancelButton');
+            const confirmButton = document.getElementById('confirmButton');
+            let confirmCallback = null;
+            
+            const pasteModal = document.getElementById('pasteModal');
+            const pasteTextarea = document.getElementById('pasteTextarea');
+            const cancelPasteButton = document.getElementById('cancelPasteButton');
+            const confirmPasteButton = document.getElementById('confirmPasteButton');
+
+            const historyModal = document.getElementById('historyModal');
+            const historyStudentName = document.getElementById('historyStudentName');
+            const historyListBody = document.getElementById('historyListBody');
+
+            // --- Gerenciamento de Dados (localStorage) ---
+            let students = [];
+            let attendance = {};
+            let classDetails = {};
+            let editingStudentId = null;
+
+            const loadData = () => {
+                students = JSON.parse(localStorage.getItem('students')) || [];
+                attendance = JSON.parse(localStorage.getItem('attendance')) || {};
+                classDetails = JSON.parse(localStorage.getItem('classDetails')) || {
+                    name: '2° Ano',
+                    teacher: 'Nome do Professor',
+                    room: '6',
+                    shift: 'Noite',
+                    bimester: '1º'
+                };
+            };
+
+            const showSavingStatus = () => {
+                savingIndicator.classList.remove('opacity-0');
+                savingIndicator.classList.add('opacity-100');
+                setTimeout(() => {
+                    savingIndicator.classList.remove('opacity-100');
+                    savingIndicator.classList.add('opacity-0');
+                }, 1500);
+            };
+
+            const saveStudents = () => {
+                localStorage.setItem('students', JSON.stringify(students));
+                showSavingStatus();
+            };
+
+            const saveAttendance = () => {
+                localStorage.setItem('attendance', JSON.stringify(attendance));
+                showSavingStatus();
+            };
+
+            const saveClassDetails = () => {
+                classDetails.name = classNameSpan.textContent.trim();
+                classDetails.teacher = classTeacherSpan.textContent.trim();
+                classDetails.room = classRoomSpan.textContent.trim();
+                classDetails.shift = classShiftSpan.textContent.trim();
+                classDetails.bimester = classBimesterSpan.textContent.trim();
+                localStorage.setItem('classDetails', JSON.stringify(classDetails));
+                showSavingStatus();
+            };
+            
+            const sortStudents = () => {
+                students.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' }));
+            };
+
+            // --- Funções do Relógio e Data ---
+            const setCurrentDate = () => {
+                const today = new Date();
+                const formattedDate = today.toISOString().split('T')[0];
+                attendanceDateInput.value = formattedDate;
+                updateListDateDisplay(formattedDate);
+            };
+
+            const updateTime = () => {
+                currentTimeDisplay.textContent = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            };
+
+            const updateListDateDisplay = (date) => {
+                const [year, month, day] = date.split('-');
+                const displayDate = new Date(year, month - 1, day);
+                listDateDisplay.textContent = `Marcando presença para: ${displayDate.toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
+            };
+
+            // --- Funções do Modal e Toast ---
+            const showModal = (targetModal, title, message, onConfirm, isDanger = false) => {
+                const modalDiv = document.getElementById(targetModal);
+                if (!modalDiv) return;
+
+                if (targetModal === 'confirmationModal') {
+                    modalTitle.textContent = title;
+                    modalMessage.textContent = message;
+                    confirmButton.className = `px-4 py-2 text-white rounded-md transition ${isDanger ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'}`;
+                    confirmCallback = onConfirm;
+                }
+                
+                modalDiv.classList.remove('hidden');
+                setTimeout(() => modalDiv.classList.add('show'), 10);
+            };
+
+            const hideModal = (targetModal) => {
+                const modalDiv = document.getElementById(targetModal);
+                if (!modalDiv) return;
+
+                modalDiv.classList.remove('show');
+                setTimeout(() => {
+                    modalDiv.classList.add('hidden');
+                    if (targetModal === 'confirmationModal') confirmCallback = null;
+                }, 300);
+            };
+            
+            const showToast = (message) => {
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            };
+
+            // --- Lógica de Gerenciamento de Alunos ---
+            const renderStudents = (searchTerm = '') => {
+                studentListTableBody.innerHTML = '';
+                studentListCardsContainer.innerHTML = '';
+                
+                const filteredStudents = students.filter(student =>
+                    student.name.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+
+                if (students.length === 0) {
+                    emptyStateTable.classList.remove('hidden');
+                    emptyStateCards.classList.remove('hidden');
+                    studentListTableBody.appendChild(emptyStateTable);
+                    studentListCardsContainer.innerHTML = emptyStateCards.outerHTML;
+                } else if (filteredStudents.length === 0) {
+                    const noResultsRow = document.createElement('tr');
+                    noResultsRow.innerHTML = `<td colspan="4" class="text-center p-8 text-gray-500 dark:text-gray-400">Nenhum aluno encontrado.</td>`;
+                    studentListTableBody.appendChild(noResultsRow);
+                    const noResultsCard = document.createElement('div');
+                    noResultsCard.className = 'text-center p-8 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg shadow-md';
+                    noResultsCard.textContent = 'Nenhum aluno encontrado.';
+                    studentListCardsContainer.appendChild(noResultsCard);
+                } else {
+                    emptyStateTable.classList.add('hidden');
+                    emptyStateCards.classList.add('hidden');
+                }
+
+                const selectedDate = attendanceDateInput.value;
+                const attendanceForDate = attendance[selectedDate] || {};
+                
+                let presentCount = 0;
+                let absentCount = 0;
+
+                filteredStudents.forEach((student, index) => {
+                    const status = attendanceForDate[student.id] || 'nao_marcado';
+                    if (status === 'presente') presentCount++;
+                    if (status === 'ausente') absentCount++;
+                    
+                    // Renderização da tabela para desktop
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors';
+                    row.setAttribute('data-student-id', student.id);
+                    row.innerHTML = `
+                        <td class="p-4 text-gray-500 dark:text-gray-400 font-mono text-sm">${index + 1}</td>
+                        <td class="p-4 font-medium text-gray-800 dark:text-gray-200">
+                            <span class="student-name" contenteditable="true">${student.name}</span>
+                            <span class="status-icon ml-2 text-xl align-middle">${status === 'presente' ? '✅' : status === 'ausente' ? '❌' : ''}</span>
+                        </td>
+                        <td class="p-4 text-center">
+                            <div class="flex justify-center gap-2 status-buttons">
+                                <button class="status-btn w-8 h-8 rounded-md text-sm font-bold transition-all ${status === 'presente' ? 'bg-green-500 text-white scale-110' : 'bg-gray-200 dark:bg-gray-700 dark:hover:bg-green-700 hover:bg-green-200'}" data-status="presente" title="Presente" aria-label="Marcar como presente">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                </button>
+                                <button class="status-btn w-8 h-8 rounded-md text-sm font-bold transition-all ${status === 'ausente' ? 'bg-red-500 text-white scale-110' : 'bg-gray-200 dark:bg-gray-700 dark:hover:bg-red-700 hover:bg-red-200'}" data-status="ausente" title="Faltou" aria-label="Marcar como faltou">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="p-4 text-center actions-col">
+                            <div class="flex justify-center gap-2">
+                                <button class="history-btn p-1 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition" title="Ver Histórico" aria-label="Ver histórico do aluno">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-history"><path d="M3 3v5h5"/><path d="M3.56 16.7A10 10 0 1 0 12 3v5"/></svg>
+                                </button>
+                                <button class="delete-btn p-1 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition" title="Excluir Aluno" aria-label="Excluir aluno">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    studentListTableBody.appendChild(row);
+
+                    // Renderização dos cartões para mobile
+                    const card = document.createElement('div');
+                    card.className = 'bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-4 flex flex-col gap-2';
+                    card.setAttribute('data-student-id', student.id);
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">ID: ${index + 1}</span>
+                            <div class="flex gap-2">
+                                <button class="history-btn text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition" title="Ver Histórico" aria-label="Ver histórico do aluno">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 3v5h5"/><path d="M3.56 16.7A10 10 0 1 0 12 3v5"/></svg>
+                                </button>
+                                <button class="delete-btn text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition" title="Excluir Aluno" aria-label="Excluir aluno">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <h4 class="text-lg font-bold">
+                            <span class="student-name" contenteditable="true">${student.name}</span>
+                            <span class="status-icon ml-2 text-xl align-middle">${status === 'presente' ? '✅' : status === 'ausente' ? '❌' : ''}</span>
+                        </h4>
+                        <div class="flex justify-start gap-2 status-buttons mt-2">
+                            <button class="status-btn px-4 py-2 rounded-md font-bold transition-all ${status === 'presente' ? 'bg-green-500 text-white scale-105' : 'bg-gray-200 dark:bg-gray-700 dark:hover:bg-green-700 hover:bg-green-200'}" data-status="presente" title="Presente" aria-label="Marcar como presente">Presente</button>
+                            <button class="status-btn px-4 py-2 rounded-md font-bold transition-all ${status === 'ausente' ? 'bg-red-500 text-white scale-105' : 'bg-gray-200 dark:bg-gray-700 dark:hover:bg-red-700 hover:bg-red-200'}" data-status="ausente" title="Faltou" aria-label="Marcar como faltou">Faltou</button>
+                        </div>
+                    `;
+                    studentListCardsContainer.appendChild(card);
+                });
+
+                const notMarkedCount = filteredStudents.length - presentCount - absentCount;
+                const summaryHtml = `
+                    <span class="flex items-center gap-2 font-semibold text-green-600 bg-green-100 dark:bg-green-900/50 dark:text-green-300 px-3 py-1 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+                        Presentes: ${presentCount}
+                    </span>
+                    <span class="flex items-center gap-2 font-semibold text-red-600 bg-red-100 dark:bg-red-900/50 dark:text-red-300 px-3 py-1 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        Ausentes: ${absentCount}
+                    </span>
+                    <span class="flex items-center gap-2 font-semibold text-gray-600 bg-gray-100 dark:bg-gray-700/50 dark:text-gray-300 px-3 py-1 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        Não Marcados: ${notMarkedCount}
+                    </span>
+                `;
+                attendanceSummary.innerHTML = summaryHtml;
+                attendanceSummaryMobile.innerHTML = summaryHtml;
+            };
+
+            const addStudent = () => {
+                const name = studentNameInput.value.trim();
+                if (name) {
+                    students.push({ id: generateUUID(), name: name });
+                    sortStudents();
+                    saveStudents();
+                    renderStudents(searchStudentInput.value);
+                    studentNameInput.value = '';
+                    studentNameInput.focus();
+                    showToast('Aluno adicionado com sucesso!');
+                }
+            };
+
+            const deleteStudent = (id) => {
+                const student = students.find(s => s.id === id);
+                showModal('confirmationModal', 'Excluir Aluno', `Tem certeza que deseja excluir "${student.name}"? Esta ação não pode ser desfeita.`, () => {
+                    students = students.filter(s => s.id !== id);
+                    saveStudents();
+                    Object.keys(attendance).forEach(date => {
+                        delete attendance[date][id];
+                    });
+                    saveAttendance();
+                    renderStudents(searchStudentInput.value);
+                    showToast('Aluno excluído com sucesso.');
+                }, true);
+            };
+            
+            const handleStudentNameEdit = (e) => {
+                const nameSpan = e.target;
+                const newName = nameSpan.textContent.trim();
+                const studentId = nameSpan.closest('[data-student-id]').dataset.studentId;
+                const student = students.find(s => s.id === studentId);
+                
+                if (newName && student && newName !== student.name) {
+                    student.name = newName;
+                    sortStudents();
+                    saveStudents();
+                    renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
+                    showToast('Nome do aluno atualizado!');
+                } else {
+                    nameSpan.textContent = student.name;
+                }
+            };
+
+            const setAttendanceStatus = (studentId, status) => {
+                const selectedDate = attendanceDateInput.value;
+                if (!attendance[selectedDate]) {
+                    attendance[selectedDate] = {};
+                }
+                
+                if (attendance[selectedDate][studentId] === status) {
+                    delete attendance[selectedDate][studentId];
+                } else {
+                    attendance[selectedDate][studentId] = status;
+                }
+                
+                saveAttendance();
+                renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
+            };
+
+            const showStudentHistory = (studentId) => {
+                const student = students.find(s => s.id === studentId);
+                if (!student) return;
+
+                historyStudentName.textContent = `Histórico de: ${student.name}`;
+                historyListBody.innerHTML = '';
+                const dates = Object.keys(attendance).sort().reverse();
+
+                let hasRecords = false;
+                dates.forEach(date => {
+                    const status = attendance[date]?.[student.id];
+                    if (!status) return;
+
+                    hasRecords = true;
+                    let statusText = '';
+                    let statusColor = '';
+
+                    if (status === 'presente') {
+                        statusText = 'Presente ✅';
+                        statusColor = 'text-green-500';
+                    } else if (status === 'ausente') {
+                        statusText = 'Ausente ❌';
+                        statusColor = 'text-red-500';
+                    }
+
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors';
+                    row.innerHTML = `
+                        <td class="p-3 text-sm">${new Date(date.replace(/-/g, '/')).toLocaleDateString('pt-BR')}</td>
+                        <td class="p-3 text-sm font-semibold ${statusColor}">${statusText}</td>
+                    `;
+                    historyListBody.appendChild(row);
+                });
+
+                if (!hasRecords) {
+                    historyListBody.innerHTML = `<tr><td colspan="2" class="p-4 text-center text-gray-500">Nenhum registro de presença para este aluno.</td></tr>`;
+                }
+                
+                showModal('historyModal');
+            };
+            
+            // --- Funções de Ações ---
+            const exportToCSV = () => {
+                if (students.length === 0) {
+                    showToast('Nenhum aluno para exportar.');
+                    return;
+                }
+
+                let csvContent = `Professor(a):,"${classDetails.teacher}"\n`;
+                csvContent += "ID,Nome,";
+                const sortedDates = Object.keys(attendance).sort();
+                csvContent += sortedDates.join(',') + "\n";
+
+                students.forEach(student => {
+                    let row = `${student.id},"${student.name}",`;
+                    const statusData = sortedDates.map(date => {
+                        const status = attendance[date]?.[student.id] || 'nao_marcado';
+                        return status;
+                    }).join(',');
+                    row += statusData;
+                    csvContent += row + "\n";
+                });
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement("a");
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", `lista_presenca_${classDetails.name.replace(/\s/g, '_')}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+
+            const importFromCSV = (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const text = e.target.result;
+                    const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+
+                    if (lines.length === 0) {
+                        showToast('Arquivo CSV vazio.');
+                        return;
+                    }
+
+                    const names = lines.map(line => line.split(',')[0].trim().replace(/"/g, '')).filter(Boolean);
+                    
+                    showModal('confirmationModal', 'Importar Alunos via CSV', `Isso substituirá sua lista atual por ${names.length} aluno(s) do arquivo. Deseja continuar?`, () => {
+                        students = names.map(name => ({ id: generateUUID(), name: name }));
+                        attendance = {}; // Limpa o histórico de presença
+                        sortStudents();
+                        saveStudents();
+                        saveAttendance();
+                        renderStudents();
+                        showToast(`${students.length} alunos importados com sucesso!`);
+                    }, true);
+                };
+                reader.readAsText(file);
+                event.target.value = '';
+            };
+
+            const exportToPDF = () => {
+                if (students.length === 0) {
+                    showToast('Nenhum aluno para exportar.');
+                    return;
+                }
+
+                const dateValue = new Date(attendanceDateInput.value.replace(/-/g, '/')).toLocaleDateString('pt-BR');
+                const attendanceForDate = attendance[attendanceDateInput.value] || {};
+                
+                let tableRows = '';
+                students.forEach((student, index) => {
+                    const status = attendanceForDate[student.id];
+                    let statusText = 'Não Marcado';
+                    if (status === 'presente') statusText = 'Presente';
+                    if (status === 'ausente') statusText = 'Faltou';
+                    
+                    tableRows += `<tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">${index + 1}</td><td style="padding: 8px;">${student.name}</td><td style="padding: 8px; text-align: center;">${statusText}</td></tr>`;
+                });
+
+                const pdfContent = `<div style="font-family: 'Inter', sans-serif; color: black; padding: 20px;"><h1 style="font-size: 24px; font-weight: bold; text-align: center;">Lista de Presença</h1><h2 style="font-size: 18px; text-align: center;">Turma: ${classDetails.name}</h2><p style="font-size: 14px; text-align: center;">Professor(a): ${classDetails.teacher}</p><p style="font-size: 14px; text-align: center;">Data: ${dateValue}</p><table style="width: 100%; border-collapse: collapse;"><thead><tr style="background-color: #f2f2f2;"><th style="padding: 8px; text-align: left;">ID</th><th style="padding: 8px; text-align: left;">Nome</th><th style="padding: 8px; text-align: center;">Status</th></tr></thead><tbody>${tableRows}</tbody></table></div>`;
+
+                const opt = {
+                    margin: 1, filename: `lista_presenca_${classDetails.name.replace(/\s/g, '_')}_${attendanceDateInput.value}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+
+                html2pdf().from(pdfContent).set(opt).save();
+            };
+
+            const shareAttendance = () => {
+                const selectedDate = attendanceDateInput.value;
+                const attendanceForDate = attendance[selectedDate] || {};
+                const dateValue = new Date(selectedDate.replace(/-/g, '/')).toLocaleDateString('pt-BR');
+
+                const presentStudents = students.filter(s => attendanceForDate[s.id] === 'presente').map(s => s.name);
+                const absentStudents = students.filter(s => attendanceForDate[s.id] === 'ausente').map(s => s.name);
+
+                let shareText = `*Resumo da Presença - ${dateValue}*\n\n` +
+                                `*Turma:* ${classDetails.name}\n` +
+                                `*Professor(a):* ${classDetails.teacher}\n\n` +
+                                `✅ *Presentes (${presentStudents.length}):*\n` +
+                                (presentStudents.length > 0 ? presentStudents.sort().join('\n') : 'Nenhum') + '\n\n' +
+                                `❌ *Faltas (${absentStudents.length}):*\n` +
+                                (absentStudents.length > 0 ? absentStudents.sort().join('\n') : 'Nenhuma');
+
+                if (navigator.share) {
+                    navigator.share({ title: `Presença - ${classDetails.name}`, text: shareText }).catch(console.error);
+                } else {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = shareText;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        showToast('Resumo copiado para a área de transferência!');
+                    } catch (err) {
+                        showToast('Erro ao copiar texto.');
+                    }
+                    document.body.removeChild(textArea);
+                }
+            };
+            
+            const markAll = (status) => {
+                const selectedDate = attendanceDateInput.value;
+                if (!attendance[selectedDate]) attendance[selectedDate] = {};
+                
+                students.forEach(student => {
+                    attendance[selectedDate][student.id] = status;
+                });
+                
+                saveAttendance();
+                renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
+            };
+
+            const clearAll = () => {
+                showModal('confirmationModal', 'Limpar Marcações', 'Você tem certeza que deseja limpar todas as marcações de presença para a data selecionada?', () => {
+                    const selectedDate = attendanceDateInput.value;
+                    attendance[selectedDate] = {};
+                    saveAttendance();
+                    renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
+                    showToast('Marcações limpas!');
+                }, true);
+            };
+            
+            const deleteAllStudents = () => {
+                showModal('confirmationModal', 'Apagar Todos os Alunos', 'Isso apagará todos os alunos e o histórico de presença. Esta ação é irreversível.', () => {
+                    students = [];
+                    attendance = {};
+                    saveStudents();
+                    saveAttendance();
+                    renderStudents();
+                    showToast('Lista de alunos apagada.');
+                }, true);
+            };
+            
+            const addStudentsFromPaste = () => {
+                const namesText = pasteTextarea.value.trim();
+                if (!namesText) { hideModal('pasteModal'); return; }
+
+                const existingNames = new Set(students.map(s => s.name.toLowerCase()));
+                const namesToAdd = namesText.split(/\r?\n/).map(name => name.trim()).filter(name => name && !existingNames.has(name.toLowerCase()));
+                
+                if (namesToAdd.length > 0) {
+                    namesToAdd.forEach(name => students.push({ id: generateUUID(), name: name }));
+                    sortStudents();
+                    saveStudents();
+                    renderStudents();
+                    showToast(`${namesToAdd.length} aluno(s) adicionado(s)!`);
+                } else {
+                    showToast('Nenhum nome novo para adicionar.');
+                }
+                
+                pasteTextarea.value = '';
+                hideModal('pasteModal');
+            };
+
+            // --- Gerenciamento do Tema Escuro ---
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    themeToggleDarkIcon.classList.remove('hidden');
+                    themeToggleLightIcon.classList.add('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    themeToggleDarkIcon.classList.add('hidden');
+                    themeToggleLightIcon.classList.remove('hidden');
+                }
+                localStorage.setItem('theme', theme);
+            };
+            const toggleTheme = () => {
+                applyTheme(localStorage.getItem('theme') === 'dark' ? 'light' : 'dark');
+            };
+            
+            // --- Event Listeners ---
+            const addAppEventListeners = () => {
+                addStudentBtn.addEventListener('click', addStudent);
+                studentNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') addStudent(); });
+                attendanceDateInput.addEventListener('change', () => {
+                    updateListDateDisplay(attendanceDateInput.value);
+                    renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
+                });
+                const handleSearch = () => renderStudents(searchStudentInput.value || searchStudentMobileInput.value);
+                searchStudentInput.addEventListener('input', handleSearch);
+                searchStudentMobileInput.addEventListener('input', handleSearch);
+                [classNameSpan, classTeacherSpan, classRoomSpan, classShiftSpan, classBimesterSpan].forEach(el => {
+                    el.addEventListener('blur', saveClassDetails);
+                    el.addEventListener('keydown', (e) => { if(e.key === 'Enter') { e.preventDefault(); el.blur(); }});
+                });
+                exportPdfBtn.addEventListener('click', exportToPDF);
+                shareBtn.addEventListener('click', shareAttendance);
+                markAllPresentBtn.addEventListener('click', () => markAll('presente'));
+                clearAllBtn.addEventListener('click', clearAll);
+                deleteAllStudentsBtn.addEventListener('click', deleteAllStudents);
+                pasteListBtn.addEventListener('click', () => showModal('pasteModal'));
+                confirmPasteButton.addEventListener('click', addStudentsFromPaste);
+                themeToggleBtn.addEventListener('click', toggleTheme);
+                importCsvBtn.addEventListener('click', () => csvFileInput.click());
+                csvFileInput.addEventListener('change', importFromCSV);
+                exportCsvBtn.addEventListener('click', exportToCSV);
+
+                const handleStudentAction = (e) => {
+                    const target = e.target;
+                    const rowOrCard = target.closest('[data-student-id]');
+                    if (!rowOrCard) return;
+                    const studentId = rowOrCard.dataset.studentId;
+
+                    if (target.closest('.status-btn')) {
+                        const status = target.closest('.status-btn').dataset.status;
+                        setAttendanceStatus(studentId, status);
+                    }
+                    if (target.closest('.delete-btn')) deleteStudent(studentId);
+                    if (target.closest('.history-btn')) showStudentHistory(studentId);
+                };
+                studentListTableBody.addEventListener('click', handleStudentAction);
+                studentListCardsContainer.addEventListener('click', handleStudentAction);
+
+                studentListTableBody.addEventListener('blur', handleStudentNameEdit, true);
+                studentListTableBody.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && e.target.classList.contains('student-name')) {
+                        e.preventDefault();
+                        e.target.blur();
+                    }
+                });
+
+                studentListCardsContainer.addEventListener('blur', handleStudentNameEdit, true);
+                studentListCardsContainer.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && e.target.classList.contains('student-name')) {
+                        e.preventDefault();
+                        e.target.blur();
+                    }
+                });
+
+                [confirmationModal, pasteModal, historyModal].forEach(modal => {
+                    modal.addEventListener('click', (e) => { if (e.target === modal) hideModal(modal.id); });
+                });
+                closeHistoryModalBtn.addEventListener('click', () => hideModal('historyModal'));
+                cancelButton.addEventListener('click', () => hideModal('confirmationModal'));
+                confirmButton.addEventListener('click', () => { if (confirmCallback) confirmCallback(); hideModal('confirmationModal'); });
+                cancelPasteButton.addEventListener('click', () => hideModal('pasteModal'));
+            };
+
+            // --- Inicialização ---
+            const startAppLogic = () => {
+                loadData();
+                classNameSpan.textContent = classDetails.name;
+                classTeacherSpan.textContent = classDetails.teacher;
+                classRoomSpan.textContent = classDetails.room;
+                classShiftSpan.textContent = classDetails.shift;
+                classBimesterSpan.textContent = classDetails.bimester;
+                sortStudents();
+                setCurrentDate();
+                setInterval(updateTime, 1000);
+                updateTime();
+                renderStudents();
+                const storedTheme = localStorage.getItem('theme');
+                applyTheme(storedTheme ? storedTheme : (prefersDark.matches ? 'dark' : 'light'));
+                addAppEventListeners();
+            };
+
+            startAppLogic();
+        });
+    </script>
 </body>
 </html>
