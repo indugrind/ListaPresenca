@@ -56,7 +56,17 @@
 </head>
 <body class="bg-gray-200 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
 
-    <div id="login-screen" class="fixed inset-0 bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-4 z-50">
+    <div id="loading-overlay" class="fixed inset-0 bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-4 z-[100]">
+        <div class="flex flex-col items-center gap-4">
+            <svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p class="text-gray-600 dark:text-gray-300">A carregar...</p>
+        </div>
+    </div>
+
+    <div id="login-screen" class="fixed inset-0 bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-4 z-50 hidden">
         <div class="w-full max-w-sm bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8">
             <h2 id="login-title" class="text-2xl font-bold text-center text-gray-700 dark:text-gray-100 mb-2">Login</h2>
             <p class="text-center text-gray-500 dark:text-gray-400 mb-6">Acesse sua conta para continuar.</p>
@@ -84,6 +94,7 @@
                     <button id="diary-btn" class="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700" title="Diário de Classe Mensal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg></button>
                     <button id="charts-btn" class="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700" title="Gráficos e Estatísticas"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8a6 6 0 0 0-6 6"/><path d="M13 13a2 2 0 0 0 2 2"/></svg></button>
                     <button id="reports-btn" class="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700" title="Relatórios"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg></button>
+                    <button id="settings-btn" class="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700" title="Definições"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
                     <button id="logout-btn" class="p-2 rounded-full text-gray-500 hover:bg-red-200 dark:hover:bg-red-700" title="Sair"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
                     <button id="theme-toggle" class="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700" title="Alternar tema"></button>
                 </div>
@@ -149,7 +160,7 @@
     <div id="confirmationModal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]"><div class="modal-content bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-md"><h3 class="text-lg font-bold mb-4" id="modalTitle"></h3><p class="text-gray-600 dark:text-gray-300 mb-6" id="modalMessage"></p><div class="flex justify-end gap-4"><button class="modal-close-btn bg-gray-200 dark:bg-gray-600 py-2 px-4 rounded-md">Cancelar</button><button id="confirmButton" class="bg-red-600 text-white py-2 px-4 rounded-md">Confirmar</button></div></div></div>
     <div id="pasteModal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]"><div class="modal-content bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-lg"><h3 class="text-lg font-bold mb-4">Colar Lista de Nomes</h3><p class="text-gray-600 dark:text-gray-300 mb-4">Cole a lista de nomes abaixo, um por linha.</p><textarea id="pasteTextarea" class="w-full h-40 p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" placeholder="João da Silva..."></textarea><div class="flex justify-end gap-4 mt-6"><button class="modal-close-btn bg-gray-200 dark:bg-gray-600 py-2 px-4 rounded-md">Cancelar</button><button id="confirmPasteButton" class="bg-teal-500 text-white py-2 px-4 rounded-md">Adicionar</button></div></div></div>
     <div id="manageClassesModal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]"><div class="modal-content bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-2xl"><h3 class="text-lg font-bold mb-4">Gerir Turmas</h3><div class="mb-4"><div class="flex flex-col sm:flex-row gap-2 mb-4"><input type="text" id="newClassName" placeholder="Nome da Nova Turma" class="flex-grow p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"><button id="addClassBtn" class="bg-blue-500 text-white p-2 rounded-md">Criar Turma</button></div><input type="text" id="searchClasses" placeholder="Buscar turma..." class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"></div><div id="classList" class="space-y-2 max-h-64 overflow-y-auto"></div><div class="flex justify-end gap-4 mt-6"><button class="modal-close-btn bg-gray-200 dark:bg-gray-600 py-2 px-4 rounded-md">Fechar</button></div></div></div>
-    <div id="settingsModal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]"><div class="modal-content bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-lg"><h3 class="text-lg font-bold mb-4">Definições</h3><div class="space-y-4"><div><h4 class="font-semibold mb-2">Gestão de Dados</h4><p class="text-sm text-gray-500">A gestão de dados agora é feita na nuvem.</p></div></div><div class="flex justify-end gap-4 mt-6"><button class="modal-close-btn bg-gray-200 dark:bg-gray-600 py-2 px-4 rounded-md">Fechar</button></div></div></div>
+    <div id="settingsModal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]"><div class="modal-content bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-lg"><h3 class="text-lg font-bold mb-4">Definições</h3><div class="space-y-4"><div><h4 class="font-semibold mb-1">Conta</h4><p class="text-sm text-gray-600 dark:text-gray-300">Sessão iniciada como:</p><p id="user-email-display" class="text-sm font-semibold"></p></div></div><div class="flex justify-end gap-4 mt-6"><button class="modal-close-btn bg-gray-200 dark:bg-gray-600 py-2 px-4 rounded-md">Fechar</button></div></div></div>
     <div id="reportsModal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]"><div class="modal-content bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-4xl"><h3 class="text-lg font-bold mb-4">Relatório de Assiduidade da Turma</h3><div id="reports-content" class="max-h-[70vh] overflow-y-auto"></div><div class="flex justify-end gap-4 mt-6"><button class="modal-close-btn bg-gray-200 dark:bg-gray-600 py-2 px-4 rounded-md">Fechar</button></div></div></div>
     <div id="diaryModal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-[60]"><div class="modal-content bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 sm:p-6 w-full max-w-7xl"><div class="flex justify-between items-center mb-4"><h3 class="text-lg font-bold">Diário de Classe Mensal</h3><div class="flex items-center gap-2"><button id="prev-month-btn" class="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">&lt;</button><span id="diary-month-year" class="font-semibold w-32 text-center"></span><button id="next-month-btn" class="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">&gt;</button></div></div><div id="diary-content" class="max-h-[70vh] overflow-auto"></div><div class="flex justify-end gap-4 mt-6"><button class="modal-close-btn bg-gray-200 dark:bg-gray-600 py-2 px-4 rounded-md">Fechar</button></div></div></div>
     <div id="chartsModal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]"><div class="modal-content bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-2xl"><h3 class="text-lg font-bold mb-4">Estatísticas Visuais da Turma</h3><div id="charts-content" class="max-h-[70vh] overflow-y-auto"><div class="w-full mx-auto" style="max-width: 400px;"><canvas id="attendance-chart"></canvas></div></div><div class="flex justify-end gap-4 mt-6"><button class="modal-close-btn bg-gray-200 dark:bg-gray-600 py-2 px-4 rounded-md">Fechar</button></div></div></div>
@@ -161,7 +172,7 @@
     // Importações do Firebase SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
     // Configuração do Firebase
     const firebaseConfig = {
@@ -212,10 +223,10 @@
 
         const monitorAuthState = () => {
             onAuthStateChanged(auth, user => {
+                $('#loading-overlay').classList.remove('hidden'); // Mostra o loading em qualquer mudança de autenticação
                 if (user) {
                     currentUser = user;
-                    $('#login-screen').classList.add('hidden');
-                    $('main').classList.remove('hidden');
+                    if (unsubscribeUserDoc) unsubscribeUserDoc(); // Garante que não há listeners antigos
                     loadUserData(user.uid);
                 } else {
                     currentUser = null;
@@ -223,6 +234,7 @@
                     data = {};
                     $('#login-screen').classList.remove('hidden');
                     $('main').classList.add('hidden');
+                    $('#loading-overlay').classList.add('hidden'); // Esconde para mostrar a tela de login
                 }
             });
         };
@@ -238,24 +250,40 @@
                     await setDoc(userDocRef, data); // Cria o documento para o novo usuário
                 }
                 initApp();
+            }, (error) => {
+                console.error("Erro no listener do Firestore:", error);
+                showToast("Não foi possível carregar os seus dados. Verifique a sua ligação.", 'error', 5000);
+                $('#loading-overlay').classList.add('hidden');
+                handleLogout(); // Desloga o usuário se não consegue ler os dados
             });
         };
 
         const initApp = () => {
-            if (data.classes.length === 0) {
+            $('#login-screen').classList.add('hidden');
+            $('main').classList.remove('hidden');
+
+            if (!data.classes || data.classes.length === 0) {
                 const newClass = createNewClass("Minha Primeira Turma");
-                data.classes.push(newClass);
+                data.classes = [newClass];
                 activeClassId = newClass.id;
                 data.activeClassId = activeClassId;
-                updateUserData();
-                return; // O onSnapshot vai pegar a atualização e chamar o initApp de novo
+                updateUserData(); // Salva a turma inicial
+                return; // O onSnapshot vai re-renderizar com a nova turma
             }
-            activeClassId = data.activeClassId || data.classes[0]?.id;
+            
+            activeClassId = data.activeClassId && data.classes.some(c => c.id === data.activeClassId) 
+                ? data.activeClassId 
+                : data.classes[0]?.id;
+            
+            data.activeClassId = activeClassId;
+            
             $('#attendanceDate').valueAsDate = new Date();
             updateClassSelector();
             renderAll();
             $('#currentTime').textContent = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
             setInterval(() => $('#currentTime').textContent = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }), 60000);
+            
+            $('#loading-overlay').classList.add('hidden'); // Esconde o loading quando a app está pronta
         };
 
         const handleAuthFormSubmit = async (e) => {
@@ -264,6 +292,7 @@
             const password = $('#password').value;
             const errorP = $('#login-error');
             errorP.textContent = '';
+            $('#loading-overlay').classList.remove('hidden');
 
             try {
                 if (isLoginMode) {
@@ -284,6 +313,7 @@
                 }
                 $('#login-form').classList.add('animate-shake');
                 setTimeout(() => $('#login-form').classList.remove('animate-shake'), 500);
+                $('#loading-overlay').classList.add('hidden');
             }
         };
 
@@ -311,8 +341,6 @@
             if (!currentUser) return;
             const userDocRef = doc(db, 'users', currentUser.uid);
             try {
-                // Usamos setDoc com merge: true que funciona como um update, mas cria se não existir.
-                // Mas como estamos controlando o objeto `data` inteiro, um setDoc simples é mais direto.
                 await setDoc(userDocRef, data);
             } catch (e) {
                 console.error("Error updating user data: ", e);
@@ -320,11 +348,11 @@
             }
         };
 
-        // --- LÓGICA DA APLICAÇÃO (Funções antigas adaptadas) ---
+        // --- LÓGICA DA APLICAÇÃO ---
 
         const getActiveClass = () => data.classes?.find(c => c.id === activeClassId);
-        const createNewClass = (name) => ({ id: `class_${Date.now()}`, name, students: [], history: {} });
-        const createNewStudent = (name) => ({ id: `student_${Date.now()}`, name });
+        const createNewClass = (name) => ({ id: crypto.randomUUID(), name, students: [], history: {} });
+        const createNewStudent = (name) => ({ id: crypto.randomUUID(), name });
 
         const renderAll = () => {
             const cls = getActiveClass();
@@ -335,7 +363,7 @@
         };
 
         const renderEmptyState = () => {
-            $('#class-title-header').textContent = "Nenhuma Turma";
+            $('#class-title-header').textContent = "Crie uma Turma";
             $('#studentList').innerHTML = '';
             $('#empty-state').classList.remove('hidden');
             $('#attendance-summary').innerHTML = '';
@@ -344,16 +372,13 @@
         
         const updateClassSelector = () => {
             const cls = getActiveClass();
-            $('#class-selector').innerHTML = data.classes?.map(c => `<option value="${c.id}" ${c.id === activeClassId ? 'selected' : ''}>${c.name}</option>`).join('') || `<option>Crie uma turma</option>`;
+            $('#class-selector').innerHTML = data.classes?.map(c => `<option value="${c.id}" ${c.id === activeClassId ? 'selected' : ''}>${c.name}</option>`).join('') || `<option>Nenhuma turma</option>`;
             if (cls) {
                 $('#class-title-header').textContent = cls.name;
                 $('#class-selector').value = activeClassId;
             }
         };
-
-        // --- Funções de Ação (handleAddStudent, deleteStudent, etc.) ---
-        // A maioria permanece a mesma, mas agora chamam `updateUserData()` em vez de `saveData()`
-
+        
         const handleAddStudent = (e) => {
             e.preventDefault();
             const cls = getActiveClass(); if (!cls) return;
@@ -362,7 +387,6 @@
                 if (cls.students.some(s => s.name.toLowerCase() === name.toLowerCase())) { showToast("Este aluno já existe.", 'error'); return; }
                 cls.students.push(createNewStudent(name));
                 $('#studentName').value = '';
-                // renderStudentList(); // onSnapshot vai cuidar disso
                 updateUserData();
                 showToast("Aluno adicionado.");
             }
@@ -377,7 +401,6 @@
                 lastActionUndoData = { type: 'delete_student', classId: activeClassId, student: studentToDelete, index: studentIndex };
                 cls.students.splice(studentIndex, 1);
                 showUndoToast('Aluno apagado.');
-                // renderStudentList();
                 updateUserData();
             });
         };
@@ -389,7 +412,6 @@
                 lastActionUndoData = { type: 'delete_all_students', classId: activeClassId, students: JSON.parse(JSON.stringify(cls.students)) };
                 cls.students = [];
                 showUndoToast(`${lastActionUndoData.students.length} alunos apagados.`);
-                // renderStudentList();
                 updateUserData();
             });
         };
@@ -403,7 +425,6 @@
             else if (type === 'delete_all_students') cls.students = students;
             lastActionUndoData = null;
             $('#undo-toast').classList.remove('show');
-            // renderStudentList();
             updateUserData();
             showToast("Ação desfeita.");
         };
@@ -411,15 +432,16 @@
         const updateAllStatuses = (status) => {
             const cls = getActiveClass(); if (!cls) return;
             const date = $('#attendanceDate').value;
+            if (!cls.history) cls.history = {};
             if (!cls.history[date]) cls.history[date] = {};
             cls.students.forEach(student => { cls.history[date][student.id] = status; });
-            // renderStudentList();
             updateUserData();
         };
 
         const handleMarkAbsentees = () => {
              const cls = getActiveClass(); if (!cls) return;
              const date = $('#attendanceDate').value;
+             if (!cls.history) cls.history = {};
              if (!cls.history[date]) cls.history[date] = {};
              let markedCount = 0;
              cls.students.forEach(student => {
@@ -429,7 +451,6 @@
                  }
              });
              if (markedCount > 0) {
-                // renderStudentList();
                 updateUserData();
                 showToast(`${markedCount} aluno(s) marcado(s) com falta.`);
              } else showToast("Nenhum aluno ausente para marcar.", 'info');
@@ -446,7 +467,6 @@
                     addedCount++;
                 }
             });
-            // renderStudentList();
             updateUserData();
             closeAllModals();
             showToast(`${addedCount} alunos adicionados.`);
@@ -460,7 +480,6 @@
                 activeClassId = newClass.id;
                 data.activeClassId = activeClassId;
                 $('#newClassName').value = '';
-                // O onSnapshot vai renderizar tudo
                 updateUserData();
             }
         };
@@ -488,8 +507,10 @@
                     nameSpan.blur();
                     btn.innerHTML = '✏️';
                     const newName = nameSpan.textContent.trim();
-                    if(newName) data.classes[classIndex].name = newName;
-                    updateUserData();
+                    if(newName && data.classes[classIndex].name !== newName) {
+                       data.classes[classIndex].name = newName;
+                       updateUserData();
+                    }
                 } else {
                     nameSpan.contentEditable = true;
                     nameSpan.focus();
@@ -498,9 +519,6 @@
                 }
             }
         };
-
-        // --- Funções de UI (renderização) ---
-        // A maioria permanece igual, pois elas leem o estado do objeto `data`
         
         const renderStudentList = () => {
             const cls = getActiveClass();
@@ -519,10 +537,8 @@
             });
 
             const filteredStudents = sortedStudents.filter(s => s.name.toLowerCase().includes(searchTerm));
-
             $('#empty-state').classList.toggle('hidden', cls.students.length > 0);
             $('#empty-search-state').classList.toggle('hidden', !searchTerm || filteredStudents.length > 0);
-
             $('#studentList').innerHTML = filteredStudents.map((student, index) => {
                 const status = dailyRecord[student.id] || '';
                 return `
@@ -536,10 +552,8 @@
                         </td>
                     </tr>`;
             }).join('');
-            
             $$('.sortable-header span').forEach(s => s.textContent = '');
             $(`#sort-by-${sortState.key} span`).textContent = sortState.asc ? '▲' : '▼';
-
             updateAllRowStatuses();
             updateAttendanceSummary();
         };
@@ -552,9 +566,7 @@
             const studentId = row.dataset.id;
             const status = dailyRecord[studentId] || '';
             const indicator = row.querySelector('.status-indicator');
-            
             $$('.status-btn', row).forEach(btn => btn.classList.remove(...Object.keys(STATUSES).map(k => `active-${k}`)));
-
             if (status && STATUSES[status]) {
                 const s = STATUSES[status];
                 indicator.textContent = s.label;
@@ -598,7 +610,6 @@
                 activeClassId = e.target.value;
                 data.activeClassId = activeClassId;
                 updateUserData();
-                renderAll();
             });
             
             const classTitleHeader = $('#class-title-header');
@@ -661,25 +672,33 @@
             $('#searchClasses').addEventListener('input', renderManageClassesList);
             $('#undo-btn').addEventListener('click', handleUndo);
 
-            // Botões de navegação dos modais
             $('#reports-btn').addEventListener('click', openReportsModal);
             $('#diary-btn').addEventListener('click', openDiaryModal);
             $('#charts-btn').addEventListener('click', openChartsModal);
+            $('#settings-btn').addEventListener('click', openSettingsModal);
             $('#prev-month-btn').addEventListener('click', () => { diaryState.month--; renderDiary(); });
             $('#next-month-btn').addEventListener('click', () => { diaryState.month++; renderDiary(); });
             $('#exportPdfBtn').addEventListener('click', handleExportPdf);
         };
-
-        // Funções de Modais e UI Helpers (maioria sem alterações)
+        
         const openModal = (selector) => $(selector).classList.add('active');
         const closeAllModals = () => $$('.modal-backdrop').forEach(m => m.classList.remove('active'));
+        
         const openManageClassesModal = () => { renderManageClassesList(); openModal('#manageClassesModal'); };
         const renderManageClassesList = () => {
             const searchTerm = $('#searchClasses').value.toLowerCase();
             const filteredClasses = data.classes?.filter(c => c.name.toLowerCase().includes(searchTerm)) || [];
             $('#classList').innerHTML = filteredClasses.map(c => `<div data-id="${c.id}" class="flex items-center justify-between p-2 border rounded-md dark:border-gray-600"><span class="class-name-span truncate pr-2 p-1 rounded-md">${c.name}</span><div class="flex-shrink-0"><button class="edit-class-btn p-1 text-blue-500 hover:text-blue-700" title="Editar nome">✏️</button><button class="delete-class-btn p-1 text-red-500 hover:text-red-700" title="Apagar turma">🗑️</button></div></div>`).join('');
         };
-        const openReportsModal = () => { /* Código idêntico à versão anterior */ };
+
+        const openSettingsModal = () => {
+            if (currentUser) {
+                $('#user-email-display').textContent = currentUser.email;
+            }
+            openModal('#settingsModal');
+        };
+
+        const openReportsModal = () => { /* A ser implementado */ showToast('Relatórios em breve!', 'info');};
         const openDiaryModal = () => { renderDiary(); openModal('#diaryModal'); };
         const renderDiary = () => {
             const cls = getActiveClass();
@@ -730,7 +749,50 @@
             });
             openModal('#chartsModal');
         };
-        const handleExportPdf = () => { /* Código idêntico à versão anterior */ };
+        const handleExportPdf = () => {
+            const cls = getActiveClass();
+            if (!cls) return;
+            showToast('A gerar PDF...', 'info');
+
+            const date = $('#attendanceDate').value;
+            const dateForDisplay = new Date(date).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+            
+            const tableContainer = $('#attendance-table-container').cloneNode(true);
+            tableContainer.querySelector('#searchStudent').parentElement.remove();
+            tableContainer.querySelector('#attendance-summary').remove();
+            tableContainer.querySelectorAll('thead th:last-child').forEach(th => th.remove());
+            tableContainer.querySelectorAll('tbody td:last-child').forEach(td => td.remove());
+            tableContainer.querySelectorAll('span[contenteditable="true"]').forEach(span => {
+                span.removeAttribute('contenteditable');
+                span.classList.remove('edit-name', 'p-1', 'rounded-md');
+            });
+             tableContainer.querySelector('table').style.minWidth = 'auto';
+
+            const element = document.createElement('div');
+            element.style.padding = '20px';
+            element.innerHTML = `
+                <div style="font-family: Inter, sans-serif;">
+                    <h1 style="font-size: 22px; font-weight: bold; margin-bottom: 8px;">${cls.name}</h1>
+                    <h2 style="font-size: 16px; margin-bottom: 16px; color: #555;">Lista de Presença - ${dateForDisplay}</h2>
+                </div>
+            `;
+            element.appendChild(tableContainer);
+
+            const opt = {
+                margin: 10,
+                filename: `lista_${cls.name.replace(/\s+/g, '_')}_${date}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().from(element).set(opt).save().then(() => {
+                showToast('PDF gerado com sucesso!');
+            }).catch(err => {
+                showToast('Erro ao gerar PDF.', 'error');
+                console.error(err);
+            });
+        };
         const showToast = (message, type = 'success', duration = 3000) => {
             const toast = $('#toast');
             toast.textContent = message;
@@ -754,13 +816,12 @@
             $('#modalTitle').textContent = title;
             $('#modalMessage').textContent = message;
             const confirmBtn = $('#confirmButton');
-            const controller = new AbortController();
-            const closeAndAbort = () => {
+            const newConfirmBtn = confirmBtn.cloneNode(true);
+            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+            newConfirmBtn.addEventListener('click', () => {
+                onConfirm();
                 closeAllModals();
-                controller.abort();
-            };
-            confirmBtn.addEventListener('click', () => { onConfirm(); closeAndAbort(); }, { signal: controller.signal });
-            $$('.modal-close-btn').forEach(btn => btn.addEventListener('click', closeAndAbort, { signal: controller.signal }));
+            });
             openModal('#confirmationModal');
         };
         const initTheme = () => {
