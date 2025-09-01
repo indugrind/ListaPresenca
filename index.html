@@ -665,7 +665,6 @@
             $('#reports-btn').addEventListener('click', openReportsModal);
             $('#diary-btn').addEventListener('click', openDiaryModal);
             $('#charts-btn').addEventListener('click', openChartsModal);
-            $('#settings-btn').addEventListener('click', () => openModal('#settingsModal'));
             $('#prev-month-btn').addEventListener('click', () => { diaryState.month--; renderDiary(); });
             $('#next-month-btn').addEventListener('click', () => { diaryState.month++; renderDiary(); });
             $('#exportPdfBtn').addEventListener('click', handleExportPdf);
